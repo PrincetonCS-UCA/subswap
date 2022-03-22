@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ERROR</title>
+<link href="{{ url_for('main.static', filename='css/styles.css') }}" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">
+<link href="{{ url_for('main.static', filename='css/error.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="error-main">
+<h1>Resource not found</h1>
+<div class="error-heading">404</div>
+<p>{{error}}</p>
+<a href="{{ url_for('main.homepage') }}"><h3>Back to safety</h3></a>
+</div>
+</body>
+</html>
