@@ -1,0 +1,79 @@
+{% extends "main/base.html" %} {% block content %}
+
+<div class="container-fluid">
+    <div class="row align-items-start">
+
+
+
+        <div class="col-md-9">
+            <section class="py-0">
+                <div class="items_container container px-4 px-lg-5">
+
+
+                    <!-- Items -->
+                    <div id="posts" class="
+              row
+              gx-4 gx-lg-5
+              row-cols-1 row-cols-md-2 row-cols-xl-3
+              justify-content-left
+            ">
+            {% for request in requests%}
+            <div class="col mb-5">
+                <div class="card h-100 w-100 bg-card border-2">
+                    <!-- body of card -->
+                    <div class="card-body p-2">
+                        <div class="text-center">
+                            <h5 class="fw-bolder">{{request.shift[0].course}}</h5>
+                            <h6>{{ request.posted_by[0].netid }}</h6>
+                            <h6>{{ request.date_posted.strftime('%Y-%m-%d') }}</h6>
+                            <h6>Course: {{ request.shift[0].course }}</h6>
+                            <h6>Time: {{request.shift[0].day}},
+                                {{request.date_requested.strftime('%Y-%m-%d')}},
+                                {{request.shift[0].start.isoformat(timespec='minutes')}}-{{request.shift[0].end.isoformat(timespec='minutes')}}
+                            </h6>
+                            <h6>Swap: {{request.swap}}</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer p-2 pt-0 border-top-0 bg-transparent">
+                    <!-- Button for modal -->
+                    <div class="text-center" >
+                      <button
+                        type="button"
+                        class="btn btn-primary stretched-link"
+                      >
+                      Sub
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary stretched-link"
+                      >
+                      Swap
+                      </button>
+                    </div>
+                  </div>
+            </div>
+            {% endfor %} 
+            </section>
+        </div>
+        <!-- left padding -->
+        <div class="col-md-1"></div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+{% endblock content %}
+<article class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <p class="mr-2">{{ request.posted_by[0].netid }}</p>
+            <small class="text-muted">{{ request.date_posted.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <h2>Course: {{ request.shift[0].course }}</h2>
+        <h2>Time: {{request.shift[0].day}}, {{request.date_requested.strftime('%Y-%m-%d')}},
+            {{request.shift[0].start.isoformat(timespec='minutes')}}-{{request.shift[0].end.isoformat(timespec='minutes')}}
+        </h2>
+        <h2>Swap: {{request.swap}}</h2>
+    </div>
+</article>

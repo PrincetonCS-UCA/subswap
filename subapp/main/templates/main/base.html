@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="{{url_for('main.static', filename='favicon.ico')}}" />
+  <!-- Bootstrap icons-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="{{url_for('main.static', filename='css/styles.css')}}" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- font awesome icons-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>TigerSub</title>
+</head>
+
+<body>
+  <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom">
+    <a class="navbar-brand" href="{{url_for('main.homepage')}}"><img style="max-height:25px"
+        src="{{url_for('main.static', filename='favicon.ico')}}" alt=""> TigerSearch</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- leftside of nav -->
+      <ul class="navbar-nav me-auto nav-pills">
+        <li id="found" class="nav-item">
+          <a class="nav-link" href="{{url_for('main.dashboard')}}" data-bs-toggle="tooltip" data-bs-placement="bottom"
+           >Dashboard</a>
+        </li>
+        <li id="myposts" class="nav-item">
+          <a class="nav-link" href="{{url_for('main.dashboard')}}" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            >Profile</a>
+        </li>
+      </ul>
+
+      <!-- rightside of nav -->
+      <ul class="navbar-nav ms-auto nav-pills">
+        <li id="about" class="nav-item">
+          <a class="nav-link" href="\">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  {% block content %}{% endblock %}
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</body>
