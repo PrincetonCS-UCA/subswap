@@ -9,7 +9,6 @@ users = Blueprint('users', __name__, template_folder = 'templates')
 cas_client = CASClient(
     version=3,
     service_url='http://localhost:5000/login?next=%2F',
-    #service_url='https://tigersearch.herokuapp.com/login?next=%2Ffound',
     server_url='https://fed.princeton.edu/cas/login'
 )
 

@@ -1,6 +1,7 @@
-from flask import make_response, render_template
+from flask import make_response, render_template, redirect, url_for
 from flask.blueprints import Blueprint
 from subapp.models import Request
+from flask_login import login_required, current_user
 main = Blueprint('main', __name__,
                  template_folder='templates',
                  static_folder='static',
@@ -17,15 +18,16 @@ def homepage():
     Case 2: Logged out: Redirects to Splash Page (/)
     """
 
-    # if current_user.is_authenticated:
-    #     # Already logged in
-    #     return redirect(url_for('main.found'))
+    if current_user.is_authenticated:
+        # Already logged in
+        return redirect(url_for('main.dashboard'))
 
     html = render_template('main/index.html')
     response = make_response(html)
     return response
 
 @main.route("/dashboard", methods=['GET', 'PUT'])
+@login_required
 def dashboard():
 
     # query database for requests
@@ -34,5 +36,7 @@ def dashboard():
     response = make_response(html)
     return response
 
+@main.route("/profile", methods=['GET', 'PUT'])
+@login_required
 def profile():
     return render_template('main/profile.html')
