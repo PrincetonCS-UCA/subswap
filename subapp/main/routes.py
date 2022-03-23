@@ -1,6 +1,6 @@
 from flask import make_response, render_template, redirect, url_for
 from flask.blueprints import Blueprint
-from subapp.models import Request
+from subapp.models import Request, User, Shift
 from flask_login import login_required, current_user
 main = Blueprint('main', __name__,
                  template_folder='templates',
@@ -31,12 +31,16 @@ def homepage():
 def dashboard():
 
     # query database for requests
-    requests = Request.query.filter(Request.accepted==False).all()
-    html = render_template('main/dashboard.html', requests=requests)
+    active_requests = Request.query.filter(Request.accepted==False).all()
+    accepted_requests = Request.query.filter(Request.accepted==True).all()
+
+    html = render_template('main/dashboard.html', requests=active_requests,accepted_requests=accepted_requests)
     response = make_response(html)
     return response
 
 @main.route("/profile", methods=['GET', 'PUT'])
 @login_required
 def profile():
-    return render_template('main/profile.html')
+    shifts=current_user.schedule
+    html = render_template('main/profile.html', shifts=shifts)
+    return make_response(html)

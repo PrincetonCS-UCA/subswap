@@ -108,14 +108,16 @@ print("Created Request-Shift relationships")
 
 # 4. Shifts - User staffed by
 for i, user in enumerate(users):
-    if i > 3:
+    if i == 1:
+        user.schedule.extend(shifts)
+    elif i > 3:
         x = random.sample(shifts, 2)
         user.schedule.append(x[0])
         user.schedule.append(x[1])
     else:
         user.schedule.append(random.choice(shifts))
 print("Created User-Shift relationships")
-
+db.session.commit()
 
 #--------------------------------------------------------------------
 # testing associations
@@ -124,3 +126,17 @@ def test_user_requests():
     for request in all_requests:        
         accepted = request.accepted()
         print(f"Posted by: {request.posted().netid}, Accepted by: {accepted}")
+
+def test_user_shifts():
+    shifts = Shift.query.all()
+    users = User.query.all()
+    for shift in shifts:
+        for user in users:
+            if user in shift.staff:
+                if shift not in user.schedule:
+                    print(f"Error: {user} in {shift} but shift not in user schedule.")
+
+            if shift in user.schedule:
+                if user not in shift.staff:
+                    print(f"Error: {shift} in {user} schedule but user not in shift staff.")
+    print("User-Shift associations are correct.")

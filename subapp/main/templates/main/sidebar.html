@@ -1,0 +1,57 @@
+<!-- Custom styles for this template -->
+<link href="{{ url_for('main.static', filename='css/sidebars.css') }}" rel="stylesheet">
+
+<body>
+    <main>
+        <div id="sidebar" class="float-start" style="margin: auto;">
+            <div class="flex-shrink-0 p-3 bg-white">
+
+                <!-- label -->
+                <svg class="bi me-2" width="30" height="24">
+                    <use xlink:href="#bootstrap" />
+                </svg>
+                <div class="text-center pb-2">
+                    <button class='btn btn-primary' type="submit" name="reset" id="reset" value="">
+                        <i class="fa fa-plus" aria-hidden="true"></i> Create Schedule
+                    </button>
+                </div>
+                <div class='text-center'>
+                    <span class="fs-5 fw-semibold"><i class="fa fa-filter" aria-hidden="true"></i> Filter and
+                        Sort</span>
+                </div>
+                <hr>
+
+                <!-- body of sidebar -->
+                <ul class="list-unstyled ps-0">
+                    <!-- clear all button -->
+                    <div class="text-center">
+                        <button class='btn btn-sm btn-secondary' type="submit" name="reset" id="reset" value=""
+                            onclick='resetAll()'>
+                            <i class="fa fa-eraser" aria-hidden="true"></i> Clear All
+                        </button>
+                    </div>
+                    <!-- filters/sort -->
+
+
+
+                    <li class="mb-1">
+                        <button class="btn btn-toggle align-items-center rounded collapsed pt-2" data-bs-toggle="collapse"
+                            data-bs-target="#sortByTime-collapse" aria-expanded="false">
+                            Sort By Time
+                        </button>
+                        <div class="collapse" id="sortByTime-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pt-1 small">
+                                <li><input id="time" type="radio" form="filters" name="time" value='desc'
+                                        oninput="getResults()" checked> Closest shift first</li>
+                                <li><input type="radio" form="filters" name="time" value='asc' oninput="getResults()">
+                                    Farthest shift first</li>
+
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+</body>

@@ -65,16 +65,16 @@ def logout_callback():
     logout_user()
     return redirect(url_for('main.homepage'))
 
-@users.app_errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html', error=error), 404
+# @users.app_errorhandler(404)
+# def not_found_error(error):
+#     return render_template('404.html', error=error), 404
 
 
-@users.app_errorhandler(Exception)
-@users.app_errorhandler(500)
-def internal_error(error):
-    return render_template('500.html', error=error), 500
+# @users.app_errorhandler(Exception)
+# @users.app_errorhandler(500)
+# def internal_error(error):
+#     return render_template('500.html', error=error), 500
 
-@users.app_errorhandler(403)
-def forbidden_error(error):
-    return render_template('403.html', error=error), 403
+# @users.app_errorhandler(403)
+# def forbidden_error(error):
+#     return render_template('403.html', error=error), 403

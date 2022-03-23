@@ -1,0 +1,61 @@
+{% extends "main/base.html" %} {% block content %}
+
+<div class="container-fluid">
+    <div class="row align-items-start">
+
+        <!-- sidebar -->
+        <div class="sticky sidebar_container col-md-2">
+            {% with tags_by_category=tags_by_category %} {% include
+            "main/sidebar.html" %} {%endwith%}
+        </div>
+        <!-- end sidebar -->
+
+        <div class="col-md-9">
+            <section class="py-5">
+                <div class="items_container container px-4 px-lg-5">
+
+
+                    <!-- Items -->
+                    <div id="posts" class="
+              row
+              gx-4 gx-lg-5
+              row-cols-1 row-cols-md-2 row-cols-xl-3
+              justify-content-left
+            ">
+            <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Course</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Shift</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for shift in shifts %}
+                    <tr>
+                        <td>{{shift.course}}</td>
+                        <td>{{shift.day}}</td>
+                        <td> {{shift.start.isoformat(timespec='minutes')}}-{{shift.end.isoformat(timespec='minutes')}}</td>
+                        <td>
+                            <button
+                            type="button"
+                            class="btn btn-primary stretched-link"
+                          >
+                          Request
+                          </button>
+                        </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </section>
+        </div>
+        <!-- left padding -->
+        <div class="col-md-1"></div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+{% endblock content %}

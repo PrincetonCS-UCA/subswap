@@ -3,7 +3,12 @@
 <div class="container-fluid">
     <div class="row align-items-start">
 
-
+        <!-- sidebar -->
+        <div class="sticky sidebar_container col-md-2">
+            {% with tags_by_category=tags_by_category %} {% include
+            "main/sidebar.html" %} {%endwith%}
+        </div>
+        <!-- end sidebar -->
 
         <div class="col-md-9">
             <section class="py-5">
@@ -17,25 +22,27 @@
               row-cols-1 row-cols-md-2 row-cols-xl-3
               justify-content-left
             ">
-            {% for request in requests%}
-            <div class="col mb-5">
-                <div class="card h-100 w-100 bg-card border-2">
-                    <!-- body of card -->
-                    <div class="card-body p-2">
-                        <div class="text-left">
-                            <h6>Posted by: {{ request.posted_by[0].netid }}</h6>
-                                <h6>Course: {{ request.shift[0].course }}</h6>
-                                <h6>Time: {{request.shift[0].day}},
-                                    {{request.date_requested.strftime('%Y-%m-%d')}},
-                                    {{request.shift[0].start.isoformat(timespec='minutes')}}-{{request.shift[0].end.isoformat(timespec='minutes')}}
-                                </h6>
-                                <h6>Date posted: {{ request.date_posted.strftime('%Y-%m-%d') }}</h6>
-                        </div>
-                    </div>
-                    <div class="card-footer p-2 pt-0 border-top-0 bg-transparent">
-                        <!-- Button for modal -->
-                        <div class="text-center" >
-                          <button
+            <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">netid</th>
+                    <th scope="col">Course</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Shift</th>
+                    <th scope="col">Date Posted</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for request in requests%}
+                    <tr>
+                        <th scope="row">{{request.posted_by[0].netid}}</th>
+                        <td>{{request.shift[0].course}}</td>
+                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                        <td> {{request.shift[0].start.isoformat(timespec='minutes')}}-{{request.shift[0].end.isoformat(timespec='minutes')}}</td>
+                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <button
                             type="button"
                             class="btn btn-primary stretched-link"
                           >
@@ -49,12 +56,12 @@
                           Swap
                           </button>
                             {% endif %}
-                        </div>
-                      </div>
-                </div>
-                </div>
-               
-            {% endfor %} 
+                        </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
             </section>
         </div>
         <!-- left padding -->
@@ -65,16 +72,3 @@
 
 
 {% endblock content %}
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <p class="mr-2">{{ request.posted_by[0].netid }}</p>
-            <small class="text-muted">{{ request.date_posted.strftime('%Y-%m-%d') }}</small>
-        </div>
-        <h2>Course: {{ request.shift[0].course }}</h2>
-        <h2>Time: {{request.shift[0].day}}, {{request.date_requested.strftime('%Y-%m-%d')}},
-            {{request.shift[0].start.isoformat(timespec='minutes')}}-{{request.shift[0].end.isoformat(timespec='minutes')}}
-        </h2>
-        <h2>Swap: {{request.swap}}</h2>
-    </div>
-</article>

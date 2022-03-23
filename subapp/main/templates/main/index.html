@@ -1,11 +1,16 @@
 {% extends "main/base.html" %}
-{% block title %}TigerSub{% endblock %}
-{% block page_content %}
+{% block content %}
 <link href="{{ url_for('main.static', filename='css/landing.css') }}" rel="stylesheet">
-<header class="masthead d-flex align-items-center">
-    <div class="container px-4 px-lg-5 text-center">
-        <h1 class="mb-1">TigerSub</h1>
-        <h2 class="mb-3" style="color:darkslategray">Princeton's Sub/Swap Marketplace</h2>
-    </div>
-</header>
-{% endblock %}
+<link href="{{url_for('main.static', filename='css/styles.css')}}" rel="stylesheet" />
+
+<body id="page-top">
+    <!-- Header-->
+    <header class="masthead d-flex align-items-center">
+        <div class="container px-4 px-lg-5 text-center">
+            <h1 class="mb-1 py-4">TigerSub</h1>
+            <a class="btn btn-secondary btn-xl" style="padding: 1rem 2rem;"
+                href="{{url_for('users.login')}}">Login</a>
+        </div>
+    </header>
+</body>
+{% endblock content %}
