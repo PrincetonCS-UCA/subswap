@@ -18,11 +18,9 @@ users.append(User(netid='ali', balance=250))
 users.append(User(netid='rehma', balance=450))
 users.append(User(netid='vini', balance=500))
 
-subs = []
 for i, user in enumerate(users):
     db.session.add(user)
 
-subs = User.query.all()[3:]
 db.session.commit()
 
 print(f"Added {len(User.query.all())} users")
@@ -90,25 +88,27 @@ print(f"Added {len(Shift.query.all())} shifts.")
 # create associations
 
 # 1. Users - posted requests and accepted requests
+subs = User.query.all()[3:]
+print(subs)
+nonsubs = User.query.all()[:3]
+requests = Request.query.all()
 for i, request in enumerate(requests):
     if i < 3:
         request.accepted_by.append(random.choice(subs))
-    user = random.choice(users)
-    user.posted_requests.append(request)
+    if i < 2:
+        request.posted_by.append(nonsubs[0])
+    else:
+        user = random.choice(nonsubs[1:])
+        user.posted_requests.append(request)
 
 db.session.commit()
 print("Created User-Request relationships")
 
-# 3. Requests - shifts
-for request in requests:
-    request.shift.append(random.choice(shifts))
-
-db.session.commit()
-print("Created Request-Shift relationships")
-
-# 4. Shifts - User staffed by
+# 3. Shifts - User staffed by
+users = User.query.all()
+shifts = Shift.query.all()
 for i, user in enumerate(users):
-    if i == 1:
+    if i == 0:
         user.schedule.extend(shifts)
     elif i > 3:
         x = random.sample(shifts, 2)
@@ -119,13 +119,22 @@ for i, user in enumerate(users):
 print("Created User-Shift relationships")
 db.session.commit()
 
+# 4. Requests - shifts
+for request in requests:
+    request.shift.append(random.choice(request.posted_by[0].schedule))
+
+db.session.commit()
+print("Created Request-Shift relationships")
+
+
+
 #--------------------------------------------------------------------
 # testing associations
 def test_user_requests():
     all_requests = Request.query.all()
-    for request in all_requests:        
-        accepted = request.accepted()
-        print(f"Posted by: {request.posted().netid}, Accepted by: {accepted}")
+    for request in all_requests:
+        accepted_by = next(iter(request.accepted_by), None)       
+        print(f"Posted by: {request.posted_by[0].netid}, Accepted by: {accepted_by}")
 
 def test_user_shifts():
     shifts = Shift.query.all()
@@ -140,3 +149,19 @@ def test_user_shifts():
                 if user not in shift.staff:
                     print(f"Error: {shift} in {user} schedule but user not in shift staff.")
     print("User-Shift associations are correct.")
+
+def test_request_shifts():
+    requests = Request.query.all()
+    for request in requests:
+        if request.shift[0] not in request.posted_by[0].schedule:
+            print(f"Error: {request} associated with {request.shift[0]} but shift not in user schedule.")
+    print("Request-Shift associations are correct.")
+
+def print_request_data():
+    requests = Request.query.all()
+    for request in requests:
+        print("Shift: ", request.shift[0])
+        print("Posted by: ", request.posted_by[0])
+        print("Accepted by: ", next(iter(request.accepted_by), None))
+        print("Shift in poster schedule: ", request.shift[0] in request.posted_by[0].schedule)
+        print("---------------------------------")

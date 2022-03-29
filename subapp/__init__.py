@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 
 
+
 db = SQLAlchemy()
 login_manager = LoginManager()
 bootstrap = Bootstrap()
@@ -16,11 +17,13 @@ def create_app(config_class=Config):
     db.init_app(app)
     login_manager.init_app(app)
     bootstrap.init_app(app)
-
+  
     from subapp.main.routes import main
     from subapp.users.routes import users
+    from subapp.requests.routes import requests
     
     app.register_blueprint(users)
     app.register_blueprint(main)
+    app.register_blueprint(requests)
 
     return app

@@ -1,61 +1,113 @@
-{% extends "main/base.html" %} {% block content %}
+{% extends "main/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
 
 <div class="container-fluid">
-    <div class="row align-items-start">
+  <div class="row align-items-start">
 
-        <!-- sidebar -->
-        <div class="sticky sidebar_container col-md-2">
-            {% with tags_by_category=tags_by_category %} {% include
-            "main/sidebar.html" %} {%endwith%}
-        </div>
-        <!-- end sidebar -->
+    <!-- sidebar -->
+    <div class="sticky sidebar_container col-md-2">
+      {% with tags_by_category=tags_by_category %} {% include
+      "main/sidebar.html" %} {%endwith%}
+    </div>
+    <!-- end sidebar -->
 
-        <div class="col-md-9">
-            <section class="py-5">
-                <div class="items_container container px-4 px-lg-5">
+    <div class="col-md-9">
+      <section class="py-5">
+        <div class="items_container container px-4 px-lg-5">
 
-
-                    <!-- Items -->
-                    <div id="posts" class="
+          <!-- Items -->
+          <div id="posts" class="
               row
               gx-4 gx-lg-5
               row-cols-1 row-cols-md-2 row-cols-xl-3
               justify-content-left
             ">
+            
             <table class="table">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Course</th>
-                    <th scope="col">Day</th>
-                    <th scope="col">Shift</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for shift in shifts %}
-                    <tr>
-                        <td>{{shift.course}}</td>
-                        <td>{{shift.day}}</td>
-                        <td> {{shift.start.isoformat(timespec='minutes')}}-{{shift.end.isoformat(timespec='minutes')}}</td>
-                        <td>
-                            <button
-                            type="button"
-                            class="btn btn-primary stretched-link"
-                          >
-                          Request
-                          </button>
-                        </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </section>
-        </div>
-        <!-- left padding -->
-        <div class="col-md-1"></div>
+              <h3>Schedule</h3>
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Course</th>
+                  <th scope="col">Day</th>
+                  <th scope="col">Shift</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for shift in shifts %}
+                <tr>
+                  <td>{{shift.course}}</td>
+                  <td>{{shift.day}}</td>
+                  <td> {{shift.start.strftime("%I:%M")}}-{{shift.end.strftime("%I:%M %p")}}</td>
+                  <td>
+                    <a href="{{url_for('requests.create_request', shiftid=shift.id)}}" class="btn btn-primary" role="button" >Request</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+            
+            <table class="table">
+              <h3>Accepted requests</h3>
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">netid</th>
+                  <th scope="col">Course</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Shift</th>
+                  <th scope="col">Date Posted</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for request in requests%}
+                <tr>
+                  <th scope="row">{{request.posted_by[0].netid}}</th>
+                  <td>{{request.shift[0].course}}</td>
+                  <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                  <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}</td>
+                  <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <table class="table">
+              <h3>History</h3>
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">netid</th>
+                  <th scope="col">Course</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Shift</th>
+                  <th scope="col">Date Posted</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for request in history%}
+                <tr>
+                  <th scope="row">{{request.posted_by[0].netid}}</th>
+                  <td>{{request.shift[0].course}}</td>
+                  <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                  <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}</td>
+                  <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                  <td>Accepted by {{request.accepted_by[0].netid}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+      </section>
     </div>
+
+    <!-- left padding -->
+    <div class="col-md-1"></div>
+  </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 
-
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 {% endblock content %}

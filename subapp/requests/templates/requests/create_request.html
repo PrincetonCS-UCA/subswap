@@ -1,0 +1,103 @@
+{% extends "main/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row align-items-start">
+
+    <!-- sidebar -->
+    <div class="sticky sidebar_container col-md-2">
+      {% with tags_by_category=tags_by_category %} {% include
+      "main/sidebar.html" %} {%endwith%}
+    </div>
+    <!-- end sidebar -->
+
+    <div class="col-md-9">
+      <section class="py-5">
+        <div class="items_container container px-4 px-lg-5">
+
+
+          <!-- Items -->
+          <div id="posts" class="
+              row
+              gx-4 gx-lg-5
+              row-cols-1 row-cols-md-2 row-cols-xl-3
+              justify-content-left
+            ">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Course</th>
+                  <th scope="col">Day</th>
+                  <th scope="col">Shift</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for shift in shifts %}
+                <tr>
+                  <td>{{shift.course}}</td>
+                  <td>{{shift.day}}</td>
+                  <td> {{shift.start.strftime("%I:%M")}}-{{shift.end.strftime("%I:%M %p")}}</td>
+                  <td>
+                    {% if shift.id == shiftid %}
+                    <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+      </section>
+      <h3>Submit Request</h3>
+        <form method="POST" action="" enctype=multipart/form-data>
+          {{ form.hidden_tag() }}
+          <div class="form-group row">
+            <label for="date_requested" class="col-sm-2 col-form-label">Date Requested</label>
+            <div class="col-sm-2">
+              {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
+            </div>
+          </div>
+          <fieldset class="form-group">
+            <div class="row">
+              <legend class="col-form-label col-sm-2 pt-0">Swap</legend>
+              <div class="col-sm-10">
+                {% for subfield in form.isSwap %}
+                <div class="form-check">
+                  {{ subfield(class="form-check-input") }}
+                  {{ subfield.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </fieldset>
+          <div class="form-group row">
+            <label for="bonus" class="col-sm-2 col-form-label">Bonus</label>
+            <div class="col-sm-2">
+              {{ form.bonus(class="form-control", id="bonus") }}
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-5">
+              <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </div>
+        </form>
+    </div>
+        
+    </div>
+
+    <!-- left padding -->
+    <div class="col-md-1"></div>
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+{% endblock content %}

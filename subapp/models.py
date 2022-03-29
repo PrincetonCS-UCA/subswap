@@ -45,11 +45,17 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.netid}')"
 
-    # def posted_requests(self):
-    #     return [request for request in self.posted_requests]
-
-    # def accepted_requests(self):
-    #     return [request for request in self.accepted_requests]
+    def active_requests(self):
+        return [request for request in self.posted_requests if not request.accepted]
+    
+    def inactive_requests(self):
+        return [request for request in self.posted_requests if request.accepted]
+    
+    def requested_shifts(self):
+        return [request.shift for request in self.active_requests()]
+    
+    def fulfilled_shifts(self):
+        return [request.shift for request in self.inactive_requests()]
 
 
 class Request(db.Model):
@@ -95,3 +101,6 @@ class Shift(db.Model):
 
     def __repr__(self):
         return f"Shift('{self.id}')"
+
+    def user_requests(self, user):
+        return [request for request in self.requests if request.posted_by == user]
