@@ -33,6 +33,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     netid = db.Column(db.String(120), unique=True, nullable=False)
     balance = db.Column(db.Integer, default=0)
+    role = db.Column(db.String(120), default="user")
 
     posted_requests = db.relationship(
         "Request", secondary=a_posted_requests, back_populates='posted_by')

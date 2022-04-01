@@ -11,7 +11,7 @@ db.create_all()
 
 # create dummy users 
 users = []
-users.append(User(netid='mmir', balance=1000))
+users.append(User(netid='mmir', balance=1000, role='Admin'))
 users.append(User(netid='tak', balance=50))
 users.append(User(netid='ffakhro', balance=150))
 users.append(User(netid='ali', balance=250))
@@ -55,7 +55,7 @@ def dummy_enddate(created_date):
     dt = datetime.combine(date.today(), created_date) + timedelta(hours=3)
     return dt.time()
 
-courses = ['COS217', 'COS226', 'COS126']
+courses = ['COS226/217', 'COS126']
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 start1 = time(15, 00)

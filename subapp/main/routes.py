@@ -1,7 +1,6 @@
 from flask import make_response, render_template, redirect, url_for
 from flask.blueprints import Blueprint
-from subapp.models import Request, Shift
-from subapp import db
+from subapp.models import Request
 from flask_login import login_required, current_user
 main = Blueprint('main', __name__,
                  template_folder='templates',

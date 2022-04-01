@@ -21,9 +21,11 @@ def create_app(config_class=Config):
     from subapp.main.routes import main
     from subapp.users.routes import users
     from subapp.requests.routes import requests
+    from subapp.admin.routes import admin
     
     app.register_blueprint(users)
     app.register_blueprint(main)
     app.register_blueprint(requests)
+    app.register_blueprint(admin)
 
     return app
