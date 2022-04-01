@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect, url_for, render_template, flash, request
-from flask_login import current_user
 from subapp.admin.forms import AddScheduleForm
 from subapp.admin.util import login_required, save_files
 from subapp.admin.scheduler import update_schedule
