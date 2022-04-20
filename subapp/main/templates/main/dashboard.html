@@ -9,61 +9,126 @@
       "main/sidebar.html" %} {%endwith%}
     </div>
     <!-- end sidebar -->
-
     <div class="col-md-9">
       <section class="py-5">
         <div class="items_container container px-4 px-lg-5">
+          <div class="card">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#description" role="tab" aria-controls="description"
+                    aria-selected="true">COS226/217</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#history" role="tab" aria-controls="history" aria-selected="false">COS126</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <div class="tab-content mt-3">
+                <div class="tab-pane active" id="description" role="tabpanel">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">netid</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Date Posted</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for request in requests%}
+                      {% if request.shift[0].course == 'COS226/217' %}
+                      <tr>
+                        <th scope="row">{{request.posted_by[0].netid}}</th>
+                        
+                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
+                        </td>
+                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                          {% if request.posted_by[0] == current_user %}
+                          <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
+                            role="button">Delete</a>
+                          {% else %}
+                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
+                            role="button">Sub</a>
 
+                          {% if request.swap == True%}
+                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
+                            role="button">Swap</a>
+                          {% endif %}
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endif %}
+                      {% endfor %}
+                    </tbody>
+                  </table>
 
-          <!-- Items -->
-          <div id="posts" class="
-              row
-              gx-4 gx-lg-5
-              row-cols-1 row-cols-md-2 row-cols-xl-3
-              justify-content-left
-            ">
-            <table class="table">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col">netid</th>
-                  <th scope="col">Course</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Shift</th>
-                  <th scope="col">Date Posted</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for request in requests%}
-                <tr>
-                  <th scope="row">{{request.posted_by[0].netid}}</th>
-                  <td>{{request.shift[0].course}}</td>
-                  <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
-                  <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}</td>
-                  <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
-                  <td>
-                    {% if request.posted_by[0] == current_user %}
-                    <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger" role="button" >Delete</a>
-                    {% else %}
-                    <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary" role="button" >Sub</a>
-                    
-                    {% if request.swap == True%}
-                    <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary" role="button" >Swap</a>
-                    {% endif %}
-                    {% endif %}
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+                </div>
 
+                <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">netid</th>
+                        
+                        <th scope="col">Date</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Date Posted</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for request in requests%}
+                      {% if request.shift[0].course == 'COS126' %}
+                      <tr>
+                        <th scope="row">{{request.posted_by[0].netid}}</th>
+                        
+                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
+                        </td>
+                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                          {% if request.posted_by[0] == current_user %}
+                          <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
+                            role="button">Delete</a>
+                          {% else %}
+                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
+                            role="button">Sub</a>
+
+                          {% if request.swap == True%}
+                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
+                            role="button">Swap</a>
+                          {% endif %}
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endif %}
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
+
     <!-- left padding -->
     <div class="col-md-1"></div>
   </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script>
+  $('#bologna-list a').on('click', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+  })
+</script>
 
 {% endblock content %}

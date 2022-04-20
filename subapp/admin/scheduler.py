@@ -27,12 +27,12 @@ def create_shift(shift, course):
     db.session.commit()
     return new_shift
 
-def create_users(staff):
+def create_users(staff, course):
     res = []
     for person in staff:
         user = User.query.filter_by(netid=person).first()
         if user is None:
-            new_user = User(netid=person)
+            new_user = User(netid=person, balance=500, role=course)
             db.session.add(new_user)
             db.session.commit()
             res.append(new_user)
@@ -52,12 +52,12 @@ def assign_shifts(df, course):
         if i < len(df.columns) - 1:
             i += 1
             shift = create_shift(key, course)
-            users = create_users(value)
+            users = create_users(value, course)
             shift.staff.extend(users)
             db.session.commit()
         else:
             # subs
-            _ = create_users(value)
+            _ = create_users(value, course)
     
 
 
