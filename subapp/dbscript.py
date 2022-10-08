@@ -2,8 +2,18 @@ from subapp import db
 from subapp.models import User, Shift, Request
 from datetime import time, timedelta, datetime, date
 import random
-#--------------------------------------------------------------------
-def create_dummy_data(all=False, reset=False, users=False, requests=False, shifts=False, ushifts=False, rshifts=False, urequests=False):
+# --------------------------------------------------------------------
+
+
+def create_dummy_data(all=False,
+                      reset=False,
+                      users=False,
+                      requests=False,
+                      shifts=False,
+                      ushifts=False,
+                      rshifts=False,
+                      urequests=False,
+                      swaprequests=False):
     if all or reset:
         reset_db()
     if all or users:
@@ -18,16 +28,22 @@ def create_dummy_data(all=False, reset=False, users=False, requests=False, shift
         user_requests()
     if all or rshifts:
         request_shifts()
+    # if all or swaprequests:
+    #     swap_requests()
     print("Dummy data created.")
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 # reset db
+
+
 def reset_db():
     db.drop_all()
     db.create_all()
     print("Database reset.")
 
-# create dummy users 
+# create dummy users
+
+
 def create_users():
     users = []
     users.append(User(netid='mmir', balance=1000, role='Admin'))
@@ -43,23 +59,41 @@ def create_users():
     db.session.commit()
 
     print(f"Added {len(User.query.all())} users")
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 # create dummy requests
+
+
 def create_requests():
-    date1 = datetime(2022, 2, 1, 0, 0, 0)
-    date2 = datetime(2022, 2, 5, 0, 0, 0)
-    date3 = datetime(2022, 2, 2, 0, 0, 0)
-    date4 = datetime(2022, 2, 3, 0, 0, 0)
-    date5 = datetime(2022, 2, 4, 0, 0, 0)
-    date6 = datetime(2022, 2, 6, 0, 0, 0)
+    dates = {}
+    weekdays = {1: "Monday",
+                2: "Tuesday",
+                3: "Wednesday",
+                4: "Thursday",
+                5: "Friday",
+                6: "Saturday",
+                7: "Sunday"}
+
+    start_date = date.today()
+    end_date = start_date + timedelta(days=30)
+
+    while start_date != end_date:
+        if weekdays[start_date.isoweekday()] not in dates:
+            dates[weekdays[start_date.isoweekday()]] = [
+                start_date]
+        else:
+            dates[weekdays[start_date.isoweekday()]].append(start_date)
+        start_date += timedelta(days=1)
+
+    finalDates = random.sample(sum(dates.values(), []), 10)
+
     requests = []
-    requests.append(Request(swap=False, date_requested=date1, base_price=10, accepted=True, bonus=5))
-    requests.append(Request(swap=True, date_requested=date2, base_price=5, accepted=True, bonus=0))
-    requests.append(Request(swap=False, date_requested=date3, base_price=15, accepted=True, bonus=10))
-    requests.append(Request(swap=False, date_requested=date4, base_price=50, accepted=False, bonus=5))
-    requests.append(Request(swap=True, date_requested=date5, base_price=25, accepted=False, bonus=0))
-    requests.append(Request(swap=True, date_requested=date6, base_price=15, accepted=False, bonus=10))
+    for i in range(10):
+        requests.append(Request(swap=random.choice([True, False]),
+                                date_requested=finalDates[i],
+                                base_price=random.randint(5, 30),
+                                accepted=random.choice([True]*10 + [False]*5),
+                                bonus=random.randint(0, 15)))
 
     for request in requests:
         db.session.add(request)
@@ -67,16 +101,19 @@ def create_requests():
     db.session.commit()
     print(f"Added {len(Request.query.all())} requests")
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 # create dummy shifts
+
+
 def create_shifts():
     def dummy_enddate(created_date):
         dt = datetime.combine(date.today(), created_date) + timedelta(hours=3)
         return dt.time()
 
     courses = ['COS226/217', 'COS126']
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    days = ['Monday', 'Tuesday', 'Wednesday',
+            'Thursday', 'Friday', 'Saturday', 'Sunday']
 
     start1 = time(15, 00)
     end1 = dummy_enddate(start1)
@@ -90,11 +127,16 @@ def create_shifts():
     end5 = dummy_enddate(start5)
 
     shifts = []
-    shifts.append(Shift(day=random.choice(days), start=start1, end=end1, course=random.choice(courses)))
-    shifts.append(Shift(day=random.choice(days), start=start2, end=end2, course=random.choice(courses)))
-    shifts.append(Shift(day=random.choice(days), start=start3, end=end3, course=random.choice(courses)))
-    shifts.append(Shift(day=random.choice(days), start=start4, end=end4, course=random.choice(courses)))
-    shifts.append(Shift(day=random.choice(days), start=start5, end=end5, course=random.choice(courses)))
+    shifts.append(Shift(day=random.choice(days), start=start1,
+                  end=end1, course=random.choice(courses)))
+    shifts.append(Shift(day=random.choice(days), start=start2,
+                  end=end2, course=random.choice(courses)))
+    shifts.append(Shift(day=random.choice(days), start=start3,
+                  end=end3, course=random.choice(courses)))
+    shifts.append(Shift(day=random.choice(days), start=start4,
+                  end=end4, course=random.choice(courses)))
+    shifts.append(Shift(day=random.choice(days), start=start5,
+                  end=end5, course=random.choice(courses)))
 
     for shift in shifts:
         db.session.add(shift)
@@ -103,13 +145,16 @@ def create_shifts():
 
     print(f"Added {len(Shift.query.all())} shifts.")
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 # create associations
 
-# 1. Users - posted requests and accepted requests
+
 def user_requests():
-    subs = User.query.all()[3:]
+    """
+    Posted requests and accepted requests.
+    """
+    subs = User.query.all()
     nonsubs = User.query.all()[:3]
     requests = Request.query.all()
     for i, request in enumerate(requests):
@@ -124,11 +169,14 @@ def user_requests():
     db.session.commit()
     print("Created User-Request relationships")
 
-# 3. Shifts - User staffed by
+
 def user_shifts():
+    """
+    3. Shifts - User staffed filter_by
+    """
     users = User.query.all()
     shifts = Shift.query.all()
-    
+
     for i, user in enumerate(users):
         if i == 0:
             user.schedule.extend(shifts)
@@ -142,10 +190,34 @@ def user_shifts():
     db.session.commit()
 
 # 4. Requests - shifts
+
+
 def request_shifts():
     requests = Request.query.all()
+    # sort schedule based on days
+    # sort requests based on days
+    # combine together
+    k = len(requests)
     for request in requests:
         request.shift.append(random.choice(request.posted_by[0].schedule))
 
     db.session.commit()
     print("Created Request-Shift relationships")
+
+# 5. Swappable requests
+
+
+def swap_requests():
+    requests = Request.query.all()
+    for i in range(0, len(requests), 2):
+        # get shifts that this user hasn't requested something for
+        requested_shifts = requests[i].posted_by[0].active_requests()
+        temp = [(r.shift[0], r.date_posted) for r in requested_shifts]
+        requested_shifts = {}
+        for tup in temp:
+            if tup[0] not in requested_shifts:
+                requested_shifts[tup[0]] = [tup[1]]
+            else:
+                requested_shifts[tup[0]].append(tup[1])
+
+        requests[i].swap_requests.append()

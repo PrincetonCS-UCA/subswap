@@ -5,15 +5,16 @@ from datetime import time
 from subapp.models import User, Shift
 from subapp import db
 
+
 def create_shift(shift, course):
     days = {
-        'Mon':'Monday',
-        'Tues':'Tuesday',
-        'Wed':'Wednesday',
-        'Thurs':'Thursday',
+        'Mon': 'Monday',
+        'Tues': 'Tuesday',
+        'Wed': 'Wednesday',
+        'Thurs': 'Thursday',
         'Fri': 'Friday',
-        'Sat':'Saturday',
-        'Sun':'Sunday'
+        'Sat': 'Saturday',
+        'Sun': 'Sunday'
     }
 
     x = shift.split()
@@ -27,12 +28,13 @@ def create_shift(shift, course):
     db.session.commit()
     return new_shift
 
-def create_users(staff, course):
+
+def create_users(staff, course, sub):
     res = []
     for person in staff:
         user = User.query.filter_by(netid=person).first()
         if user is None:
-            new_user = User(netid=person, balance=500, role=course)
+            new_user = User(netid=person, balance=500, role=course, sub=sub)
             db.session.add(new_user)
             db.session.commit()
             res.append(new_user)
@@ -40,8 +42,9 @@ def create_users(staff, course):
             res.append(user)
     return res
 
+
 def assign_shifts(df, course):
-    i = 0 
+    i = 0
     for key, value in df.iteritems():
 
         # value is list of users
@@ -52,20 +55,20 @@ def assign_shifts(df, course):
         if i < len(df.columns) - 1:
             i += 1
             shift = create_shift(key, course)
-            users = create_users(value, course)
+            users = create_users(value, course, False)
             shift.staff.extend(users)
             db.session.commit()
         else:
             # subs
-            _ = create_users(value, course)
-    
-
+            _ = create_users(value, course, True)
 
 
 def update_schedule():
     # get csv files
-    cos226_path = os.path.join(current_app.root_path, 'admin/static/files/cos226.csv')
-    cos126_path = os.path.join(current_app.root_path, 'admin/static/files/cos126.csv')
+    cos226_path = os.path.join(
+        current_app.root_path, 'admin/static/files/cos226.csv')
+    cos126_path = os.path.join(
+        current_app.root_path, 'admin/static/files/cos126.csv')
     cos226 = pd.read_csv(cos226_path)
     cos126 = pd.read_csv(cos126_path)
 
