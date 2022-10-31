@@ -176,10 +176,11 @@ def user_shifts():
     """
     users = User.query.all()
     shifts = Shift.query.all()
+    cos126 = Shift.query.filter_by(course="COS126").all()
 
     for i, user in enumerate(users):
         if i == 0:
-            user.schedule.extend(shifts)
+            user.schedule.extend(cos126[:2])
         elif i > 3:
             x = random.sample(shifts, 2)
             user.schedule.append(x[0])

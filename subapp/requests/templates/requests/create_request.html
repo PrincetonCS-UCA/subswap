@@ -75,13 +75,14 @@
                       <div class="col-sm-3">
                         {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
                       </div>
+                      <span id = "daterror"></span>
                     </div>
                     <!-- Can you swap? -->
                     <legend class="col-form-label col-sm-2 pt-0">Swap</legend>
                     <div class="col-sm-10">
                       {% for subfield in form.isSwap %}
                       <div class="form-check">
-                        {{ subfield(class="form-check-input") }}
+                        {{ subfield(class="form-check-input", id="swap_toggle") }}
                         {{ subfield.label(class="form-check-label") }}
                       </div>
                       {% endfor %}
@@ -93,22 +94,22 @@
                       </div>
                     </div>
                   </div>
-                  <hr>
                   <!-- Fields for adding swap dates -->
-
-                  <div id="swapsubform">
+                  
+                  <div id="swapsubform" style="display:none">
+                    <hr>
                     <div>
                       <h4>
                         Indicate upto 5 shifts you would be willing to swap with.</h4>
                     </div>
-                    <div class="form-group row">
+                    <div id="swap_options">                    
+                      {% for choice in form.swaps %}
+                      <div class="form-check">
+                          {{ choice(id="swap_choices", class="form-check-input") }}
+                          {{ choice.label(class="form-check-label") }}
+                      </div>
+                      {% endfor %}
                     </div>
-                    {% for choice in form.swaps %}
-                    <div class="form-check">
-                        {{ choice(class="form-check-input") }}
-                        {{ choice.label(class="form-check-label") }}
-                    </div>
-                {% endfor %}
                   </div>
                 </fieldset>
 
@@ -137,7 +138,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-
+<script src="{{url_for('requests.static', filename='js/script.js')}}"></script>
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 {% endblock content %}
