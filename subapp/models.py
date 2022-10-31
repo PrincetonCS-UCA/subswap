@@ -127,5 +127,10 @@ class Shift(db.Model):
     def __repr__(self):
         return f"Shift('{self.id}')"
 
+    def formatted(self):
+        s = self.start.strftime("%I:%M%p")
+        e = self.end.strftime("%I:%M%p")
+        return f"{self.day}, {s} - {e}"
+
     def user_requests(self, user):
         return [request for request in self.requests if request.posted_by == user]

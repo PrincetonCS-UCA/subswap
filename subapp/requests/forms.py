@@ -1,20 +1,13 @@
 from flask_wtf import FlaskForm
-from flask_login import current_user
-from subapp.models import Shift
-from wtforms import DateField, FieldList, FormField, Form
-from wtforms.fields import SubmitField, RadioField, IntegerField, SelectField, BooleanField
+from wtforms import DateField, Form
+from wtforms.fields import SubmitField, RadioField, IntegerField, SelectField, BooleanField, SelectMultipleField
 from wtforms.validators import DataRequired
+from wtforms.widgets import CheckboxInput, ListWidget
 
 
-class SwapDateForm(Form):
-    """Subform.
-
-    CSRF is disabled for this subform (using `Form` as parent class) because
-    it is never used by itself.
-    """
-    shift = SelectField('Shift', choices=[], coerce=int,
-                        validators=[DataRequired()])
-    date = DateField('Date', validators=[DataRequired()])
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
 
 
 class RequestForm(FlaskForm):
@@ -26,5 +19,5 @@ class RequestForm(FlaskForm):
     date_requested = DateField(
         'Date Requested', format='%Y-%m-%d', validators=[DataRequired()])
     bonus = IntegerField("Bonus")
-    swaps = FieldList(FormField(SwapDateForm), min_entries=5)
+    swaps = MultiCheckboxField('Shift', coerce=int)
     submit = SubmitField('Submit')
