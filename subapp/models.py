@@ -110,6 +110,9 @@ class Request(db.Model):
         else:
             return False
 
+    def get_price(self):
+        return self.base_price + self.bonus
+
 
 class Shift(db.Model):
     id = db.Column(db.Integer, primary_key=True)

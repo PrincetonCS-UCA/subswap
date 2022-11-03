@@ -45,7 +45,11 @@
       <!-- rightside of nav -->
       {% if current_user.is_authenticated %}
       <ul class="navbar-nav ms-auto nav-pills">
-        
+        <li id="credits" class="nav-item my-2">
+          <a class="btn my-2 my-sm-0" aria-pressed="true">
+            Credits <span class="badge badge-dark">{{credits}}</span>
+          </a>       
+        </li>
         <li id="found" class="nav-item">
           <a class="nav-link" href="{{url_for('main.dashboard')}}">Dashboard</a>
         </li>

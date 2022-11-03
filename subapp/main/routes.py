@@ -47,3 +47,8 @@ def profile():
     html = render_template('main/profile.html', shifts=current_user.schedule,
                            requests=current_user.accepted_requests, history=current_user.inactive_requests())
     return make_response(html)
+
+
+@main.context_processor
+def inject_credits():
+    return dict(credits=current_user.balance)
