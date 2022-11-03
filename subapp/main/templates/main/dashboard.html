@@ -59,12 +59,54 @@
                             role="button">Sub</a>
 
                           {% if request.swap == True%}
-                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
-                            role="button">Swap</a>
+                          <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#swap{{request.id}}"
+                            >
+                            Swap
+                            </button>
                           {% endif %}
                           {% endif %}
                         </td>
                       </tr>
+                      <div
+                          class="modal fade"
+                          id="swap{{request.id}}"
+                          tabindex="-1"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                          >
+                          <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
+                              <div class="modal-content">
+                                <div class="bg-secondary modal-header">
+                                    <h5 class="text-white modal-title" id="exampleModalLabel">
+                                      COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
+                                    </h5>
+                                    <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                    ></button>
+                                </div>
+                                <div class="bg-secondary modal-footer">
+                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+                                    Cancel
+                                    </button>
+                                    <button
+                                    type="button"
+                                    class="btn btn-primary btn-ok"
+                                    onclick="submit_request('{{request.id}}')"
+                                    data-bs-dismiss="modal"
+                                    >
+                                    Submit
+                                    </button>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
                       {% endif %}
                       {% endfor %}
                     </tbody>
@@ -106,12 +148,61 @@
                             role="button">Sub</a>
 
                           {% if request.swap == True%}
-                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
-                            role="button">Swap</a>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#swap{{request.id}}"
+                            >
+                            Swap
+                            </button>
+                          
                           {% endif %}
                           {% endif %}
                         </td>
                       </tr>
+                      <!-- swap shift modal -->
+                        <div
+                          class="modal fade"
+                          id="swap{{request.id}}"
+                          tabindex="-1"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                          >
+                          <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
+                              <div class="modal-content">
+                                <div class="bg-secondary modal-header">
+                                    <h5 class="text-white modal-title" id="exampleModalLabel">
+                                      COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
+                                    </h5>
+                                    <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                    ></button>
+                                </div>
+                                <div class="bg-light modal-body">
+                                  {% for swap in request.swap_requests %}
+                                  <p> {{swap.shift[0].day}}, {{swap.date_requested.strftime('%m-%d-%Y')}}</p>
+                                  {% endfor %}
+                                </div>
+                                <div class="bg-secondary modal-footer">
+                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+                                    Cancel
+                                    </button>
+                                    <button
+                                    type="button"
+                                    class="btn btn-primary btn-ok"
+                                    onclick="submit_request('{{request.id}}')"
+                                    data-bs-dismiss="modal"
+                                    >
+                                    Submit
+                                    </button>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
                       {% endif %}
                       {% endfor %}
                     </tbody>
@@ -125,7 +216,7 @@
         </div>
       </section>
     </div>
-
+    
     <!-- left padding -->
     <div class="col-md-1"></div>
   </div>
