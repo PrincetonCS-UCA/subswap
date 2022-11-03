@@ -6,6 +6,7 @@ from datetime import time, timedelta, datetime, date
 from subapp.models import Request, Shift
 from subapp.requests.forms import RequestForm
 from subapp import db
+from subapp.requests.util import get_swap_options, process_shift_str
 
 requests = Blueprint('requests', __name__,
                      template_folder='templates',
@@ -20,36 +21,47 @@ def create_request(shiftid):
     shift = Shift.query.filter_by(id=shiftid).first()
 
     form = RequestForm()
-    form.swaps.choices = [(1, 'dummy'), (1, 'dummyyyy')]
+    all_shifts = Shift.query.all()
+    form.swaps.choices = [(x.id, x.formatted()) for x in all_shifts]
 
     # shifts in curr user schedule
-    all_shifts = Shift.query.all()
+    if request.method == 'POST':
+        # if swap then update form choices
+        if form.isSwap.data:
+            choices = []
+            for shift_data in form.swaps.data:
+                idx, curr_shift = process_shift_str(shift_data)
+                choices.append((shift_data, shift_data))
+            form.swaps.choices = choices
+            print("LOOK: ", form.swaps.choices)
 
-    if form.validate_on_submit():
-        # create request
-        new_request = Request(swap=bool(
-            form.isSwap.data),
-            date_requested=form.date_requested.data,
-            base_price=0,
-            bonus=form.bonus.data)
+        if form.validate_on_submit():
+            # create request
+            new_request = Request(swap=bool(
+                form.isSwap.data),
+                date_requested=form.date_requested.data,
+                base_price=0,
+                bonus=form.bonus.data)
 
-        db.session.add(new_request)
-        new_request.shift.append(shift)
-        new_request.posted_by.append(current_user)
+            new_request.shift.append(shift)
+            new_request.posted_by.append(current_user)
 
-        # relating with swappable requests
-        for shift in all_shifts:
-            if shift.id in form.swaps.data:
-                new_request = Request(
-                    swap=False, date_requested=shift.date, base_price=0, bonus=0)
-                new_request.posted_by.append(current_user)
-                request.swap_requests.append(new_request)
+            # relating with swappable requests
+            for shift_data in form.swaps.data:
+                idx, date = process_shift_str(shift_data)
+                swap_shift = Shift.query.filter_by(id=idx).first()
+                new_swap_request = Request(
+                    swap=False, date_requested=date, base_price=0, bonus=0, is_possible_swap=True)
+                new_swap_request.posted_by.append(current_user)
+                db.session.add(new_swap_request)
+                new_request.swap_requests.append(new_swap_request)
 
-        db.session.commit()
+            db.session.add(new_request)
+            db.session.commit()
 
-        return redirect(url_for('main.dashboard'))
-    else:
-        print(form.errors)
+            return redirect(url_for('main.dashboard'))
+        else:
+            print(form.errors)
 
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule)
 
@@ -76,36 +88,5 @@ def delete_request(requestid):
 @requests.route("/swap_shifts/<startdate>")
 @login_required
 def swap_shifts(startdate):
-    request_date = datetime.strptime(
-        startdate, '%Y-%m-%d')
-    num_days = request_date - \
-        datetime.combine(date.today(), datetime.min.time())
-    dates = [request_date - timedelta(days=x)
-             for x in range(1, num_days.days)]
-    dates += [request_date + timedelta(days=x)
-              for x in range(10 - num_days.days)]
-    dates.sort()
-
-    # we have a list of dates
-    # need to query by role
-    all_shifts = Shift.query.filter_by()
-    day_shifts = {}
-
-    for shift in all_shifts:
-        if shift not in current_user.schedule:
-            if shift.day not in day_shifts:
-                day_shifts[shift.day] = [shift]
-            else:
-                day_shifts[shift.day].append(shift)
-
-    swap_shift_list = []
-
-    # add shifts to each day
-    for x in dates:
-        # get shifts for that day
-        if x.strftime('%A') in day_shifts:
-            for shift in day_shifts[x.strftime('%A')]:
-                swap_shift_list.append(
-                    [shift.id, shift.formatted() + ", " + x.strftime("%m-%d-%Y")])
-
-    return jsonify({'swap_shifts': swap_shift_list})
+    res = get_swap_options(startdate)
+    return jsonify({'swap_shifts': res})

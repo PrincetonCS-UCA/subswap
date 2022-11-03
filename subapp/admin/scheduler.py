@@ -34,7 +34,7 @@ def create_users(staff, course, sub):
     for person in staff:
         user = User.query.filter_by(netid=person).first()
         if user is None:
-            new_user = User(netid=person, balance=500, role=course, sub=sub)
+            new_user = User(netid=person, balance=100, role=course, sub=sub)
             db.session.add(new_user)
             db.session.commit()
             res.append(new_user)

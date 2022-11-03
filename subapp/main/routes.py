@@ -26,20 +26,24 @@ def homepage():
     response = make_response(html)
     return response
 
+
 @main.route("/dashboard", methods=['GET', 'PUT'])
 @login_required
 def dashboard():
 
     # query database for requests
-    active_requests = Request.query.filter(Request.accepted==False).all()
+    active_requests = Request.query.filter(
+        Request.accepted == False, Request.is_possible_swap == False).all()
 
-    html = render_template('main/dashboard.html', requests=active_requests,current_user=current_user)
+    html = render_template('main/dashboard.html',
+                           requests=active_requests, current_user=current_user)
     response = make_response(html)
     return response
+
 
 @main.route("/profile", methods=['GET', 'PUT'])
 @login_required
 def profile():
-    html = render_template('main/profile.html', shifts=current_user.schedule, requests=current_user.accepted_requests, history=current_user.inactive_requests())
+    html = render_template('main/profile.html', shifts=current_user.schedule,
+                           requests=current_user.accepted_requests, history=current_user.inactive_requests())
     return make_response(html)
-

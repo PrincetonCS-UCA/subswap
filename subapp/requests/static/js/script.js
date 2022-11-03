@@ -1,6 +1,7 @@
 var request_date = document.getElementById("date_requested");
 var swap_options = document.getElementById("swap_options");
 request_date.onchange = function () {
+    swap_options.innerHTML = '';
     // Get date of shift
     let date = request_date.value;
     if (new Date(date) < new Date()) {
@@ -19,11 +20,12 @@ request_date.onchange = function () {
 
             for (let i = 0; i < data.swap_shifts.length; i++) {
                 optionHTML += '<div class="form-check">';
-                optionHTML += '<input class="form-check-input" name="swaps" type="checkbox" value="' + data.swap_shifts[i][0] + '">';
-                optionHTML += '<label class="form-check-label" for="swaps-' + i + '">' + data.swap_shifts[i][1] + '</label>';
+                optionHTML += '<label>';
+                optionHTML += '<input class="form-check-input" name="swaps" type="checkbox" value="' + data.swap_shifts[i][0] + ', ' + data.swap_shifts[i][1] + '">';
+                optionHTML += data.swap_shifts[i][1] + '</label>'
                 optionHTML += '</div>'
             }
-
+            console.log("Here");
             swap_options.innerHTML = optionHTML;
 
         })

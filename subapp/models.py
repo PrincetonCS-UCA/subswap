@@ -79,6 +79,7 @@ class Request(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     date_requested = db.Column(db.DateTime, nullable=False)
+    is_possible_swap = db.Column(db.Boolean, default=False, nullable=False)
     # associated users and shifts
     posted_by = db.relationship(
         "User", secondary=a_posted_requests, back_populates='posted_requests')
