@@ -2,6 +2,7 @@ from subapp.models import Shift
 from datetime import time, timedelta, datetime, date
 from flask import jsonify
 from flask_login import current_user
+import math
 
 # def validate_request(request, swap):
 #     # can current user create this request?
@@ -12,6 +13,16 @@ from flask_login import current_user
 #     # if swap is true, can the user swap this shift?
 
 #     pass
+
+
+def calc_base_price(shiftid, startdate):
+    request_date = datetime.strptime(
+        startdate, '%Y-%m-%d')
+    num_days = request_date - \
+        datetime.combine(date.today(), datetime.min.time())
+    price = int(50/math.log(num_days.days, 2)) if num_days.days > 1 else 60
+
+    return {'status': "True" if price < current_user.balance else "False", 'price': price}
 
 
 def get_swap_options(startdate):

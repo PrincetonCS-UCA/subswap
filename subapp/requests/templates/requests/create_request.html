@@ -70,15 +70,15 @@
             
                     <!-- Date requested -->
                     <div class="form-group row">
-                      <label for="date_requested" class="col-sm-2 col-form-label">Date</label>
-                      <div class="col-sm-3">
+                      <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
+                      <div class="col-sm-4">
                         {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
                       </div>
                       <span id = "daterror"></span>
                     </div>
                     <!-- Can you swap? -->
                     <div class="form-group row">
-                      <legend class="col-form-label col-sm-2">Swap</legend>
+                      <legend class="col-form-label col-sm-2"><strong>Swap<span style="color:#ff0000">*</span></strong></legend>
                       <div class="col-sm-10">
                         {% for subfield in form.isSwap %}
                         <div class="form-check">
@@ -89,12 +89,12 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-2">Base Price</div>
+                      <div class="col-sm-2"><strong>Base Price</strong></div>
                       <div class="col-md-10" id="base_price">Enter date to calculate base price.</div>
                     </div>
 
                     <div class="form-group row">
-                      <label for="bonus" class="col-sm-2 col-form-label">Bonus</label>
+                      <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus<span style="color:#ff0000">*</span></strong></label>
                       <div class="col-sm-3">
                         {{ form.bonus(class="form-control", id="bonus") }}
                       </div>

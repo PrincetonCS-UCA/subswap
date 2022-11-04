@@ -4,15 +4,31 @@ request_date.onchange = function () {
     swap_options.innerHTML = '';
     // Get date of shift
     let date = request_date.value;
-    if (new Date(date) < new Date()) {
+    if (new Date(date.replace(/-/g, '\/').replace(/T.+/, '')) < new Date()) {
         $("#daterror").html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
         <strong>Hey!</strong> Please choose a valid date.\
         <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">\
         <span aria-hidden="true">&times;</span>\
         </button>\
         </div>');
+    } else {
+        $("#daterror").html('')
     }
     date = encodeURIComponent(date);
+
+    // getting price
+    let shiftid = window.location.href.split('/');
+    shiftid = shiftid[shiftid.length - 2];
+    var base_price = document.getElementById("base_price");
+    fetch('http://localhost:5000/calculate_base_price/' + shiftid + '/' + date).then(function (response) {
+        response.json().then(function (data) {
+            if (data.status == "True") {
+                base_price.innerHTML = data.price
+            } else {
+                base_price.innerHTML = "You do not have sufficient credits to create this request. Please select another day or contact the Lab Manager."
+            }
+        })
+    })
 
     fetch('http://localhost:5000/swap_shifts/' + date).then(function (response) {
         response.json().then(function (data) {
@@ -25,7 +41,6 @@ request_date.onchange = function () {
                 optionHTML += data.swap_shifts[i][1] + '</label>'
                 optionHTML += '</div>'
             }
-            console.log("Here");
             swap_options.innerHTML = optionHTML;
 
         })
