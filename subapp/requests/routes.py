@@ -57,6 +57,7 @@ def create_request(shiftid):
                 new_request.swap_requests.append(new_swap_request)
 
             db.session.add(new_request)
+            current_user.balance -= new_request.get_price()
             db.session.commit()
 
             return redirect(url_for('main.dashboard'))
