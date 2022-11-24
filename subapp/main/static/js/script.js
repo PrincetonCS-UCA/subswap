@@ -1,3 +1,8 @@
+// get the modal body
+// inject checkboxes
+// verify checkboxes
+// send swap request
+
 var request_date = document.getElementById("date_requested");
 var swap_options = document.getElementById("swap_options");
 request_date.onchange = function () {

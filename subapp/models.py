@@ -110,6 +110,9 @@ class Request(db.Model):
     def get_price(self):
         return self.base_price + self.bonus
 
+    def get_course(self):
+        return self.shift[0].course
+
 
 class Shift(db.Model):
     id = db.Column(db.Integer, primary_key=True)

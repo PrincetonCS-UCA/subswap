@@ -2,6 +2,7 @@ from subapp import db
 from subapp.models import User, Shift, Request
 from datetime import time, timedelta, datetime, date
 import random
+from config import COURSES
 # --------------------------------------------------------------------
 
 
@@ -111,7 +112,6 @@ def create_shifts():
         dt = datetime.combine(date.today(), created_date) + timedelta(hours=3)
         return dt.time()
 
-    courses = ['COS226/217', 'COS126']
     days = ['Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -128,15 +128,15 @@ def create_shifts():
 
     shifts = []
     shifts.append(Shift(day=random.choice(days), start=start1,
-                  end=end1, course=random.choice(courses)))
+                  end=end1, course=random.choice(COURSES)))
     shifts.append(Shift(day=random.choice(days), start=start2,
-                  end=end2, course=random.choice(courses)))
+                  end=end2, course=random.choice(COURSES)))
     shifts.append(Shift(day=random.choice(days), start=start3,
-                  end=end3, course=random.choice(courses)))
+                  end=end3, course=random.choice(COURSES)))
     shifts.append(Shift(day=random.choice(days), start=start4,
-                  end=end4, course=random.choice(courses)))
+                  end=end4, course=random.choice(COURSES)))
     shifts.append(Shift(day=random.choice(days), start=start5,
-                  end=end5, course=random.choice(courses)))
+                  end=end5, course=random.choice(COURSES)))
 
     for shift in shifts:
         db.session.add(shift)

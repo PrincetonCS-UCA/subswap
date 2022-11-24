@@ -43,16 +43,13 @@ def get_swap_options(startdate):
     dates.sort()
 
     # we have a list of dates
-    # need to query by role
-    all_shifts = Shift.query.filter_by()
     day_shifts = {}
 
-    for shift in all_shifts:
-        if shift not in current_user.schedule:
-            if shift.day not in day_shifts:
-                day_shifts[shift.day] = [shift]
-            else:
-                day_shifts[shift.day].append(shift)
+    for shift in current_user.schedule:
+        if shift.day not in day_shifts:
+            day_shifts[shift.day] = [shift]
+        else:
+            day_shifts[shift.day].append(shift)
 
     swap_shift_list = []
 

@@ -2,6 +2,8 @@ from flask import make_response, render_template, redirect, url_for
 from flask.blueprints import Blueprint
 from subapp.models import Request
 from flask_login import login_required, current_user
+from config import COURSES
+
 main = Blueprint('main', __name__,
                  template_folder='templates',
                  static_folder='static',
@@ -33,10 +35,15 @@ def dashboard():
 
     # query database for requests
     active_requests = Request.query.filter(
-        Request.accepted == False, Request.is_possible_swap == False).all()
+        Request.accepted == False).all()
+
+    requests = {}
+    for course in COURSES:
+        requests[course] = [x for x in active_requests if x.get_course()
+                            == course]
 
     html = render_template('main/dashboard.html',
-                           requests=active_requests, current_user=current_user)
+                           requests=requests, current_user=current_user)
     response = make_response(html)
     return response
 

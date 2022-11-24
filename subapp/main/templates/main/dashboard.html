@@ -15,201 +15,113 @@
           <div class="card">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#description" role="tab" aria-controls="description"
-                    aria-selected="true">COS226/217</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#history" role="tab" aria-controls="history" aria-selected="false">COS126</a>
-                </li>
+                {% for course in requests %}
+                  {% if current_user.role in ["Admin", course] %}
+                  <li class="nav-item">
+                    {% if loop.index == 1%}
+                    <a class="nav-link active" href="#{{course|escape}}" role="tab" aria-controls="{{course|escape}}", aria-selected="true">{{course|escape}}</a>
+                    {% else %}
+                    <a class="nav-link" href="#{{course|escape}}" role="tab" aria-controls="{{course|escape}}", aria-selected="false">{{course|escape}}</a>
+                    {% endif %}
+                  </li>
+                  {% endif %}
+                {% endfor %}
               </ul>
             </div>
             <div class="card-body">
               <div class="tab-content mt-3">
-                {% if current_user.role in ["Admin", "COS226/217"] %}
-                <div class="tab-pane active" id="description" role="tabpanel">
-                  <table class="table">
-                    <thead class="thead-light">
-                      <tr>
-                        <th scope="col">netid</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Shift</th>
-                        <th scope="col">Date Posted</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for request in requests%}
-                      {% if request.shift[0].course == 'COS226/217' %}
-                      <tr>
-                        <th scope="row">{{request.posted_by[0].netid}}</th>
-                        
-                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
-                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
-                        </td>
-                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
-                        <td>{{request.get_price()}} </td>
-                        <td>
-                          {% if request.posted_by[0] == current_user %}
-                          <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
-                            role="button">Delete</a>
-                          {% else %}
-                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
-                            role="button">Sub</a>
-
-                          {% if request.swap == True%}
-                          <button
-                              type="button"
-                              class="btn btn-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#swap{{request.id}}"
-                            >
-                            Swap
-                            </button>
-                          {% endif %}
-                          {% endif %}
-                        </td>
-                      </tr>
-                      <div
-                          class="modal fade"
-                          id="swap{{request.id}}"
-                          tabindex="-1"
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                          >
-                          <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
-                              <div class="modal-content">
-                                <div class="bg-secondary modal-header">
-                                    <h5 class="text-white modal-title" id="exampleModalLabel">
-                                      COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
-                                    </h5>
-                                    <button
+                {% for course in requests %}
+                  {% if current_user.role in ["Admin", course] %}
+                    {% if loop.index == 1 %}
+                        <div class="tab-pane active" id="{{course|escape}}" role="tabpanel">
+                    {% else %}
+                        <div class="tab-pane" id="{{course|escape}}" role="tabpanel" aria-labelledby="{{course|escape}}-tab">
+                    {% endif%}
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th scope="col">netid</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Shift</th>
+                              <th scope="col">Date Posted</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for request in requests[course] %}
+                            <tr>
+                              <th scope="row">{{request.posted_by[0].netid}}</th>
+                              
+                              <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                              <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
+                              </td>
+                              <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                              <td>{{request.get_price()}} </td>
+                              <td>
+                                {% if request.posted_by[0] == current_user %}
+                                <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
+                                  role="button">Delete</a>
+                                {% else %}
+                                <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
+                                  role="button">Sub</a>
+      
+                                {% if request.swap == True%}
+                                <button
                                     type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                    ></button>
-                                </div>
-                                <div class="bg-secondary modal-footer">
-                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
-                                    Cancel
-                                    </button>
-                                    <button
-                                    type="button"
-                                    class="btn btn-primary btn-ok"
-                                    onclick="submit_request('{{request.id}}')"
-                                    data-bs-dismiss="modal"
-                                    >
-                                    Submit
-                                    </button>
-                                </div>
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#swap{{request.id}}"
+                                  >
+                                  Swap
+                                  </button>
+                                {% endif %}
+                                {% endif %}
+                              </td>
+                            </tr>
+                            <div
+                                class="modal fade"
+                                id="swap{{request.id}}"
+                                tabindex="-1"
+                                aria-labelledby="exampleModalLabel"
+                                aria-hidden="true"
+                                >
+                                <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
+                                    <div class="modal-content">
+                                      <div class="bg-secondary modal-header">
+                                          <h5 class="text-white modal-title" id="exampleModalLabel">
+                                            COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
+                                          </h5>
+                                          <button
+                                          type="button"
+                                          class="btn-close"
+                                          data-bs-dismiss="modal"
+                                          aria-label="Close"
+                                          ></button>
+                                      </div>
+                                      <div class="bg-secondary modal-footer">
+                                          <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+                                          Cancel
+                                          </button>
+                                          <button
+                                          type="button"
+                                          class="btn btn-primary btn-ok"
+                                          onclick="submit_request('{{request.id}}')"
+                                          data-bs-dismiss="modal"
+                                          >
+                                          Submit
+                                          </button>
+                                      </div>
+                                    </div>
+                                  </div>
                               </div>
-                            </div>
-                        </div>
-                      {% endif %}
-                      {% endfor %}
-                    </tbody>
-                  </table>
-
-                </div>
-                {% endif %}
-                {% if current_user.role in ["Admin", "COS126"] %}
-                <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
-                  <table class="table">
-                    <thead class="thead-light">
-                      <tr>
-                        <th scope="col">netid</th>
-                        
-                        <th scope="col">Date</th>
-                        <th scope="col">Shift</th>
-                        <th scope="col">Date Posted</th>
-                        <th scope="col">Price </th>
-                        <th scope="col">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for request in requests%}
-                      {% if request.shift[0].course == 'COS126' %}
-                      <tr>
-                        <th scope="row">{{request.posted_by[0].netid}}</th>
-                        
-                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
-                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
-                        </td>
-                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
-                        <td>{{request.get_price()}} </td>
-                        <td>
-                          {% if request.posted_by[0] == current_user %}
-                          <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
-                            role="button">Delete</a>
-                          {% else %}
-                          <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
-                            role="button">Sub</a>
-
-                          {% if request.swap == True%}
-                            <button
-                              type="button"
-                              class="btn btn-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#swap{{request.id}}"
-                            >
-                            Swap
-                            </button>
+                            {% endfor %}
+                          </tbody>
                           
-                          {% endif %}
-                          {% endif %}
-                        </td>
-                      </tr>
-                      <!-- swap shift modal -->
-                        <div
-                          class="modal fade"
-                          id="swap{{request.id}}"
-                          tabindex="-1"
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                          >
-                          <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
-                              <div class="modal-content">
-                                <div class="bg-secondary modal-header">
-                                    <h5 class="text-white modal-title" id="exampleModalLabel">
-                                      COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
-                                    </h5>
-                                    <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                    ></button>
-                                </div>
-                                <div class="bg-light modal-body">
-                                  {% for swap in request.swap_requests %}
-                                  <p> {{swap.shift[0].day}}, {{swap.date_requested.strftime('%m-%d-%Y')}}</p>
-                                  {% endfor %}
-                                </div>
-                                <div class="bg-secondary modal-footer">
-                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
-                                    Cancel
-                                    </button>
-                                    <button
-                                    type="button"
-                                    class="btn btn-primary btn-ok"
-                                    onclick="submit_request('{{request.id}}')"
-                                    data-bs-dismiss="modal"
-                                    >
-                                    Submit
-                                    </button>
-                                </div>
-                              </div>
-                            </div>
-                        </div>
-                      {% endif %}
-                      {% endfor %}
-                    </tbody>
-                  </table>
+                        </table>
+                      </div>
                   {% endif %}
-
-                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -222,6 +134,7 @@
   </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{url_for('main.static', filename='js/script.js')}}"></script>
 <script>
   $('#bologna-list a').on('click', function (e) {
     e.preventDefault()

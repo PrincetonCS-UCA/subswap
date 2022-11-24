@@ -4,4 +4,7 @@ class Config:
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PRICING_ALG = "default"
+
+
+PRICING_ALG = "default"
+COURSES = ["COS126", "COS2xx"]
