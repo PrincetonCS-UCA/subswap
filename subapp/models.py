@@ -76,10 +76,12 @@ class Request(db.Model):
     base_price = db.Column(db.Integer, nullable=False)
     accepted = db.Column(db.Boolean, default=False, nullable=False)
     bonus = db.Column(db.Integer, nullable=False, default=0)
+    subsidy = db.Column(db.Integer, default=0)
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     date_requested = db.Column(db.DateTime, nullable=False)
-    is_possible_swap = db.Column(db.Boolean, default=False, nullable=False)
+    date_accepted = db.Column(db.DateTime)
+
     # associated users and shifts
     posted_by = db.relationship(
         "User", secondary=a_posted_requests, back_populates='posted_requests')
@@ -90,11 +92,6 @@ class Request(db.Model):
     # has to be a shift that is associated with the user requesting it
     shift = db.relationship(
         "Shift", secondary=a_requested_shifts, back_populates="requests")
-
-    # has to be shifts that are not in the current users schedule and don't
-    # conflict with them
-    swap_requests_id = db.Column(db.Integer, db.ForeignKey('request.id'))
-    swap_requests = db.relationship("Request")
 
     def __repr__(self):
         return f"Request('{self.id}')"

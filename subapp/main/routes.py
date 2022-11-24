@@ -49,6 +49,6 @@ def profile():
     return make_response(html)
 
 
-@main.context_processor
-def inject_credits():
-    return dict(credits=current_user.balance)
+# @main.context_processor
+# def inject_credits():
+#     return dict(credits=current_user.balance)

@@ -1,13 +1,15 @@
-from flask import (redirect, url_for, render_template, request, jsonify)
+from flask import (redirect, url_for, render_template, request, jsonify, flash)
 from flask.blueprints import Blueprint
 from flask_login import login_required, current_user
-from datetime import time, timedelta, datetime, date
+from datetime import datetime
 
 from subapp.models import Request, Shift
 from subapp.requests.forms import RequestForm
 from subapp import db
 from subapp.requests.util import (
     get_swap_options, process_shift_str, calc_base_price)
+from config import PRICING_ALG
+import requests
 
 requests = Blueprint('requests', __name__,
                      template_folder='templates',
@@ -22,50 +24,26 @@ def create_request(shiftid):
     shift = Shift.query.filter_by(id=shiftid).first()
 
     form = RequestForm()
-    all_shifts = Shift.query.all()
-    form.swaps.choices = [(x.id, x.formatted()) for x in all_shifts]
 
     # shifts in curr user schedule
-    if request.method == 'POST':
-        # if swap then update form choices
-        if form.isSwap.data:
-            choices = []
-            for shift_data in form.swaps.data:
-                idx, curr_shift = process_shift_str(shift_data)
-                choices.append((shift_data, shift_data))
-            form.swaps.choices = choices
-            print("LOOK: ", form.swaps.choices)
+    if form.validate_on_submit():
+        # create request
+        new_request = Request(
+            date_requested=form.date_requested.data,
+            base_price=calc_base_price(
+                shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price'],
+            bonus=form.bonus.data)
 
-        if form.validate_on_submit():
-            # create request
-            new_request = Request(swap=bool(
-                form.isSwap.data),
-                date_requested=form.date_requested.data,
-                base_price=calc_base_price(
-                    shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price'],
-                bonus=form.bonus.data)
+        new_request.shift.append(shift)
+        new_request.posted_by.append(current_user)
 
-            new_request.shift.append(shift)
-            new_request.posted_by.append(current_user)
+        db.session.add(new_request)
+        current_user.balance -= new_request.get_price()
+        db.session.commit()
 
-            # relating with swappable requests
-            if new_request.swap:
-                for shift_data in form.swaps.data:
-                    idx, date = process_shift_str(shift_data)
-                    swap_shift = Shift.query.filter_by(id=idx).first()
-                    new_swap_request = Request(
-                        swap=False, date_requested=date, base_price=0, bonus=0, is_possible_swap=True)
-                    new_swap_request.posted_by.append(current_user)
-                    db.session.add(new_swap_request)
-                    new_request.swap_requests.append(new_swap_request)
-
-            db.session.add(new_request)
-            current_user.balance -= new_request.get_price()
-            db.session.commit()
-
-            return redirect(url_for('main.dashboard'))
-        else:
-            print(form.errors)
+        return redirect(url_for('main.dashboard'))
+    else:
+        print(form.errors)
 
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule)
 
@@ -74,11 +52,42 @@ def create_request(shiftid):
 @ login_required
 def sub_request(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
+    if rqst.posted() == current_user:
+        flash("Cannot accept your own request")
+        return redirect(url_for('main.dashboard'))
     rqst.accepted = True
     rqst.accepted_by.append(current_user)
+    rqst.date_accepted = datetime.today()
     current_user.balance += rqst.get_price()
     db.session.commit()
     return redirect(url_for('main.profile'))
+
+
+@ requests.route("/request/<requestid>/swap", methods=['POST', 'GET'])
+@ login_required
+def swap_request(requestid):
+    # check if it's not the current user
+    rqst = Request.query.filter_by(id=requestid).first()
+    if rqst.posted() == current_user:
+        flash("Cannot accept your own request")
+        return redirect(url_for('main.dashboard'))
+
+    # mark as accepted
+    rqst.accepted = True
+    rqst.accepted_by.append(current_user)
+    rqst.date_accepted = datetime.today()
+
+    # create new request for the swap shift
+    shift_data = request.args.get("swap_shift_data")
+    idx, date = process_shift_str(shift_data)
+    swap_shift = Shift.query.filter_by(id=idx).first()
+    price = calc_base_price(idx, date)
+    new_swap_request = Request(
+        date_requested=date, base_price=price, bonus=0, subsidy=price-rqst.base_price
+    )
+    new_swap_request.shift.append(swap_shift)
+    db.session.add(new_swap_request)
+    db.session.commit()
 
 
 @ requests.route("/request/<requestid>/delete", methods=['POST', 'GET'])
@@ -99,8 +108,15 @@ def swap_shifts(startdate):
     return jsonify({'swap_shifts': res})
 
 
-@requests.route("/calculate_base_price/<shiftid>/<date>")
+@requests.route("/calculate_base_price")
 @login_required
-def calculate_base_price(shiftid, date):
-    res = calc_base_price(int(shiftid), date)
+def calculate_base_price():
+    shiftid = request.args.get('shiftid')
+    date = request.args.get('date')
+    res = 0
+    if PRICING_ALG == "default":
+        res = calc_base_price(int(shiftid), date)
+    else:
+        res = requests.get(PRICING_ALG)
+
     return jsonify(res)
