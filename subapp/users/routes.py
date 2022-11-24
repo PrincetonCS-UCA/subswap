@@ -49,6 +49,7 @@ def login():
             db.session.commit()
 
         login_user(new_user)
+        session['credits'] = new_user.balance
 
         return redirect(next)
 

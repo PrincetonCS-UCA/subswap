@@ -1,4 +1,4 @@
-from flask import make_response, render_template, redirect, url_for
+from flask import make_response, render_template, redirect, url_for, session
 from flask.blueprints import Blueprint
 from subapp.models import Request
 from flask_login import login_required, current_user
@@ -32,6 +32,8 @@ def homepage():
 @main.route("/dashboard", methods=['GET', 'PUT'])
 @login_required
 def dashboard():
+    if 'credits' not in session:
+        session['credits'] = current_user.balance
 
     # query database for requests
     active_requests = Request.query.filter(
@@ -54,8 +56,3 @@ def profile():
     html = render_template('main/profile.html', shifts=current_user.schedule,
                            requests=current_user.accepted_requests, history=current_user.inactive_requests())
     return make_response(html)
-
-
-# @main.context_processor
-# def inject_credits():
-#     return dict(credits=current_user.balance)

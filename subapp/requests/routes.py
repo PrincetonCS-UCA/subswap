@@ -1,4 +1,5 @@
-from flask import (redirect, url_for, render_template, request, jsonify, flash)
+from flask import (redirect, url_for, render_template,
+                   request, jsonify, flash, session)
 from flask.blueprints import Blueprint
 from flask_login import login_required, current_user
 from datetime import datetime
@@ -39,6 +40,7 @@ def create_request(shiftid):
 
         db.session.add(new_request)
         current_user.balance -= new_request.get_price()
+        session['credits'] = current_user.balance
         db.session.commit()
 
         return redirect(url_for('main.dashboard'))
@@ -59,6 +61,7 @@ def sub_request(requestid):
     rqst.accepted_by.append(current_user)
     rqst.date_accepted = datetime.today()
     current_user.balance += rqst.get_price()
+    session['credits'] = current_user.balance
     db.session.commit()
     return redirect(url_for('main.profile'))
 
@@ -97,6 +100,7 @@ def delete_request(requestid):
     if rqst.posted() == current_user:
         db.session.delete(rqst)
         current_user.balance += rqst.get_price()
+        session['credits'] = current_user.balance
         db.session.commit()
     return redirect(url_for('main.dashboard'))
 
