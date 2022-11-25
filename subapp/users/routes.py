@@ -67,6 +67,7 @@ def logout():
 def logout_callback():
     # redirect from CAS logout request after CAS logout successfully
     session.pop('username', None)
+    session.pop('credits', None)
     logout_user()
     return redirect(url_for('main.homepage'))
 
@@ -75,10 +76,6 @@ def logout_callback():
 @login_required
 def balance():
     return jsonify({'balance': current_user.balance})
-
-# @users.app_errorhandler(404)
-# def not_found_error(error):
-#     return render_template('404.html', error=error), 404
 
 
 # @users.app_errorhandler(Exception)

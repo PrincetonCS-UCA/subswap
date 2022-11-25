@@ -16,8 +16,10 @@ import math
 
 
 def calc_base_price(shiftid, startdate):
-    request_date = datetime.strptime(
-        startdate, '%Y-%m-%d')
+    request_date = startdate
+    if (type(startdate) == str):
+        request_date = datetime.strptime(
+            startdate, '%Y-%m-%d')
     num_days = request_date - \
         datetime.combine(date.today(), datetime.min.time())
     price = int(50/math.log(num_days.days, 2)) if num_days.days > 1 else 60
@@ -25,15 +27,15 @@ def calc_base_price(shiftid, startdate):
     return {'status': "True" if price < current_user.balance else "False", 'price': price}
 
 
-def get_swap_options(startdate):
+def get_swap_options(request_date):
     """
     Genereates possible swap shifts for the current user around startdate.
     Looks for possible shifts in a 10 day window around startdate.
 
     Returns a list in this format: [[1, "Monday, 03:00PM - 06:00PM, 11-07-2022"], ...]
     """
-    request_date = datetime.strptime(
-        startdate, '%Y-%m-%d')
+    # request_date = datetime.strptime(
+    #     startdate, '%Y-%m-%d')
     num_days = request_date - \
         datetime.combine(date.today(), datetime.min.time())
     dates = [request_date - timedelta(days=x)

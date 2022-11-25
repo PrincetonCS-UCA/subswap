@@ -79,18 +79,25 @@ def swap_request(requestid):
     rqst.accepted = True
     rqst.accepted_by.append(current_user)
     rqst.date_accepted = datetime.today()
+    print("Request accepted.")
 
     # create new request for the swap shift
     shift_data = request.args.get("swap_shift_data")
+    print(f"Processing {shift_data}")
     idx, date = process_shift_str(shift_data)
     swap_shift = Shift.query.filter_by(id=idx).first()
     price = calc_base_price(idx, date)
+    price = price['price']
+    print(f"Price of new shift is {price}. Old is {rqst.get_price()}")
     new_swap_request = Request(
         date_requested=date, base_price=price, bonus=0, subsidy=price-rqst.base_price
     )
     new_swap_request.shift.append(swap_shift)
+    new_swap_request.posted_by.append(current_user)
     db.session.add(new_swap_request)
     db.session.commit()
+    flash("Request successfully accepted.")
+    return redirect(url_for('main.dashboard'))
 
 
 @ requests.route("/request/<requestid>/delete", methods=['POST', 'GET'])
@@ -105,10 +112,11 @@ def delete_request(requestid):
     return redirect(url_for('main.dashboard'))
 
 
-@requests.route("/swap_shifts/<startdate>")
+@requests.route("/swap_shifts/<requestid>")
 @login_required
-def swap_shifts(startdate):
-    res = get_swap_options(startdate)
+def swap_shifts(requestid):
+    rqst = Request.query.filter_by(id=requestid).first()
+    res = get_swap_options(rqst.date_requested)
     return jsonify({'swap_shifts': res})
 
 

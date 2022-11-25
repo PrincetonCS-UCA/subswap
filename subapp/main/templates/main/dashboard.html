@@ -66,16 +66,16 @@
                                 <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
                                   role="button">Sub</a>
       
-                                {% if request.swap == True%}
                                 <button
                                     type="button"
                                     class="btn btn-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#swap{{request.id}}"
+                                    id="swap_modal_button"
+                                    data-requestid={{request.id}}
                                   >
                                   Swap
                                   </button>
-                                {% endif %}
                                 {% endif %}
                               </td>
                             </tr>
@@ -89,8 +89,8 @@
                                 <div class="modal-dialog modal-dialog-centered" style="text-align: left;">
                                     <div class="modal-content">
                                       <div class="bg-secondary modal-header">
-                                          <h5 class="text-white modal-title" id="exampleModalLabel">
-                                            COS126, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
+                                          <h5 class="modal-title" id="exampleModalLabel">
+                                            {{course}}, {{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}
                                           </h5>
                                           <button
                                           type="button"
@@ -99,6 +99,8 @@
                                           aria-label="Close"
                                           ></button>
                                       </div>
+                                      <div class="modal-body" id="swap_modal_body">
+                                      </div>
                                       <div class="bg-secondary modal-footer">
                                           <button type="button" class="btn btn-default" data-bs-dismiss="modal">
                                           Cancel
@@ -106,7 +108,7 @@
                                           <button
                                           type="button"
                                           class="btn btn-primary btn-ok"
-                                          onclick="submit_request('{{request.id}}')"
+                                          onclick="swap_request('{{request.id}}')"
                                           data-bs-dismiss="modal"
                                           >
                                           Submit
