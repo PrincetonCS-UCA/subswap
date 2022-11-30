@@ -3,6 +3,7 @@ from flask.blueprints import Blueprint
 from subapp.models import Request
 from flask_login import login_required, current_user
 from config import COURSES
+from subapp import dbscript
 
 main = Blueprint('main', __name__,
                  template_folder='templates',
@@ -56,3 +57,9 @@ def profile():
     html = render_template('main/profile.html', shifts=current_user.schedule,
                            requests=current_user.accepted_requests, history=current_user.inactive_requests())
     return make_response(html)
+
+
+@main.route("/create_dummy_data", methods=['GET', 'POST'])
+@login_required
+def create_dummy_data():
+    dbscript.create_dummy_data(all=True)
