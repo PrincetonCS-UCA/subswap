@@ -1,8 +1,12 @@
+import os
+
+
 class Config:
-    SECRET_KEY = "wubalubadubdub"
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     ENV = 'development'
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL').replace("://", "ql://", 1)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
