@@ -13,3 +13,4 @@ WTForms==2.3.3
 Flask-Migrate==3.1.0
 Pillow==9.0.0
 Werkzeug~=2.0.0
+pandas==1.5.2
