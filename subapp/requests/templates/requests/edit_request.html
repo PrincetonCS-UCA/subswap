@@ -62,7 +62,7 @@
 
           <!-- Request form -->
           <div class="card border-dark mb-3">
-            <h4 class="card-header px-3 py-3">Create New Request</h3>
+            <h4 class="card-header px-3 py-3">Edit Request</h3>
             <div class="class-block pt-3">
                 <fieldset class="form-group px-3 py-1 md-2">
                   <form method="POST" action="" enctype=multipart/form-data>
@@ -79,7 +79,8 @@
                     
                     <div class="form-group row">
                       <div class="col-sm-2"><strong>Base Price</strong></div>
-                      <div class="col-md-10" id="base_price">Enter date to calculate base price.</div>
+                      <div class="col-md-10" id="base_price">{{base}}</div>
+                   
                     </div>
 
                     <div class="form-group row">
@@ -91,7 +92,7 @@
 
                     <div class="form-group row">
                       <div class="col-sm-5">
-                        <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
+                        <a class="btn btn-secondary" href="{{url_for('main.dashboard')}}">Cancel</a>
                         {{ form.submit(class="btn btn-primary") }}
                       </div>
                     </div>
@@ -114,7 +115,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{url_for('requests.static', filename='js/script.js')}}"></script>
 <script type="text/javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 {% endblock content %}

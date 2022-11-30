@@ -50,6 +50,45 @@ def create_request(shiftid):
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule)
 
 
+@requests.route("/request/<requestid>/edit", methods=['POST', 'GET'])
+@login_required
+def edit_request(requestid):
+    # shift requested
+    rqst = Request.query.filter_by(id=requestid).first()
+    if current_user != rqst.posted():
+        # abort(403)
+        return redirect(url_for('main.dashboard'))
+
+    shift = rqst.shift[0]
+
+    form = RequestForm()
+
+    # shifts in curr user schedule
+    if form.validate_on_submit():
+        # create request
+        old_price = rqst.get_price()
+        old_date = rqst.date_requested
+        rqst.date_requested = form.date_requested.data
+        if old_date != form.date_requested.data:
+            rqst.base_price = calc_base_price(
+                shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price']
+        rqst.bonus = form.bonus.data
+
+        db.session.add(rqst)
+        current_user.balance += old_price - rqst.get_price()
+        session['credits'] = current_user.balance
+        db.session.commit()
+        flash("The request has been updated.")
+        return redirect(url_for('main.dashboard'))
+    else:
+        print(form.errors)
+
+    form.date_requested.data = rqst.date_requested.date()
+    form.bonus.data = rqst.bonus
+
+    return render_template('requests/edit_request.html', form=form, shiftid=shift.id, shifts=current_user.schedule, base=rqst.base_price)
+
+
 @ requests.route("/request/<requestid>/sub", methods=['POST', 'GET'])
 @ login_required
 def sub_request(requestid):
@@ -109,6 +148,8 @@ def delete_request(requestid):
         current_user.balance += rqst.get_price()
         session['credits'] = current_user.balance
         db.session.commit()
+    else:
+        flash("Unauthorized user.")
     return redirect(url_for('main.dashboard'))
 
 

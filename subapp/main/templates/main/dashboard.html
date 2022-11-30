@@ -60,6 +60,8 @@
                               <td>{{request.get_price()}} </td>
                               <td>
                                 {% if request.posted_by[0] == current_user %}
+                                <a href="{{url_for('requests.edit_request', requestid=request.id)}}" class="btn btn-info"
+                                  role="button">Edit</a>
                                 <a href="{{url_for('requests.delete_request', requestid=request.id)}}" class="btn btn-danger"
                                   role="button">Delete</a>
                                 {% else %}
