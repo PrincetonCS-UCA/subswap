@@ -63,3 +63,4 @@ def profile():
 @login_required
 def create_dummy_data():
     dbscript.create_dummy_data(all=True)
+    return redirect(url_for('main.dashboard'))
