@@ -4,7 +4,7 @@ from subapp.models import Request
 from flask_login import login_required, current_user
 from config import COURSES
 from subapp import dbscript
-
+from datetime import date
 main = Blueprint('main', __name__,
                  template_folder='templates',
                  static_folder='static',
@@ -38,7 +38,7 @@ def dashboard():
 
     # query database for requests
     active_requests = Request.query.filter(
-        Request.accepted == False).all()
+        Request.accepted == False).filter(Request.date_requested >= date.today()).order_by(Request.date_requested.asc()).all()
 
     requests = {}
     for course in COURSES:
