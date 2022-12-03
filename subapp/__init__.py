@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask.logging import default_handler
-#from subapp import dbscript
 from click import echo
 from config import config
 
@@ -36,7 +35,7 @@ def create_app():
     initialize_extensions(app)
     register_blueprints(app)
     configure_logging(app)
-    # register_cli_commands(app)
+    register_cli_commands(app)
 
     # check if the database needs to be initialized
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -81,11 +80,12 @@ def register_blueprints(app):
     app.register_blueprint(admin)
 
 
-# def register_cli_commands(app):
-#     @app.cli.command('init_db')
-#     def initialize_database():
-#         dbscript.create_dummy_data(all=True)
-#         echo("Initialized the database!")
+def register_cli_commands(app):
+    @app.cli.command('init_db')
+    def initialize_database():
+        from subapp import dbscript
+        dbscript.create_dummy_data(all=True)
+        echo("Initialized the database!")
 
 
 def configure_logging(app):
