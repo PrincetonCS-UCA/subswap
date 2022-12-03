@@ -1,7 +1,8 @@
 {% extends "main/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-
+<meta id="day-data" data-day="{{day}}">
+<link href="{{ url_for('requests.static', filename='css/form.css') }}" rel="stylesheet">
 <div class="container-fluid">
   <div class="row align-items-start">
 
@@ -50,7 +51,6 @@
                       </tr>
                       {% endfor %}
                     </tbody>
-
                   </table>
                 </div>
 
@@ -65,7 +65,7 @@
             <h4 class="card-header px-3 py-3">Create New Request</h3>
             <div class="class-block pt-3">
                 <fieldset class="form-group px-3 py-1 md-2">
-                  <form method="POST" action="" enctype=multipart/form-data>
+                  <form id="request_form" method="POST" action="" enctype=multipart/form-data>
                     {{ form.hidden_tag() }}
             
                     <!-- Date requested -->
@@ -73,8 +73,8 @@
                       <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
                       <div class="col-sm-4">
                         {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
+                        <div class="error-message pt-1" id = "date_error"></div>
                       </div>
-                      <span id = "daterror"></span>
                     </div>
                     
                     <div class="form-group row">
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="form-group row">
-                      <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus<span style="color:#ff0000">*</span></strong></label>
+                      <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus</strong></label>
                       <div class="col-sm-3">
                         {{ form.bonus(class="form-control", id="bonus") }}
                       </div>
@@ -92,10 +92,10 @@
                     <div class="form-group row">
                       <div class="col-sm-5">
                         <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
-                        {{ form.submit(class="btn btn-primary") }}
+                        {{ form.submit(class="btn btn-primary", id="submit") }}
                       </div>
+                      <div class="error-message" id = "form_error"></div>
                     </div>
-
                 </fieldset>
               </form>
 

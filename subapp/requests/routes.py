@@ -47,7 +47,7 @@ def create_request(shiftid):
     else:
         print(form.errors)
 
-    return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule)
+    return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule, day=shift.day)
 
 
 @requests.route("/request/<requestid>/edit", methods=['POST', 'GET'])
