@@ -71,8 +71,17 @@
                     <!-- Date requested -->
                     <div class="form-group row">
                       <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
-                      <div class="col-sm-4">
-                        {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
+                      <div class="col-sm-3">
+                        {% if form.date_requested.errors %}
+                          {{ form.date_requested(class="form-control is-invalid", id="date_requested", type="date") }}
+                          <div class="invalid-feedback">
+                              {% for error in form.date_requested.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                          </div>
+                        {% else %}
+                          {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
+                        {% endif %}
                         <div class="error-message pt-1" id = "date_error"></div>
                       </div>
                     </div>
@@ -85,7 +94,16 @@
                     <div class="form-group row">
                       <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus</strong></label>
                       <div class="col-sm-3">
-                        {{ form.bonus(class="form-control", id="bonus") }}
+                        {% if form.bonus.errors %}
+                          {{ form.bonus(class="form-control is-invalid", id="bonus") }}
+                          <div class="invalid-feedback">
+                              {% for error in form.date_requested.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                          </div>
+                        {% else %}
+                          {{ form.bonus(class="form-control", id="bonus") }}
+                        {% endif %}
                       </div>
                     </div>
 
@@ -93,6 +111,13 @@
                       <div class="col-sm-5">
                         <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
                         {{ form.submit(class="btn btn-primary", id="submit") }}
+                        {% if form.submit.errors %}
+                          <ul class=errors>
+                            {% for error in form.submit.errors %}
+                              <li>{{error}}</li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
                       </div>
                       <div class="error-message" id = "form_error"></div>
                     </div>
