@@ -16,7 +16,7 @@ request_date.onchange = function () {
         var base_price = document.getElementById("base_price");
         base_price.innerHTML = "Enter a valid date to calculate base price."
     } else if (getDayOfDate(date) != day) {
-        $("#date_error").html('Please select a valid date. This one is not a ' + day + '.');
+        $("#date_error").html('Please select a date that falls on a ' + day + '.');
         $("#form_error").html('');
         var base_price = document.getElementById("base_price");
         base_price.innerHTML = "Enter a valid date to calculate base price."

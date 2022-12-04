@@ -1,6 +1,8 @@
 {% extends "main/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
+<meta id="day-data" data-day="{{day}}">
+<link href="{{ url_for('requests.static', filename='css/form.css') }}" rel="stylesheet">
 
 <div class="container-fluid">
   <div class="row align-items-start">
@@ -64,40 +66,39 @@
           <div class="card border-dark mb-3">
             <h4 class="card-header px-3 py-3">Edit Request</h3>
             <div class="class-block pt-3">
-                <fieldset class="form-group px-3 py-1 md-2">
-                  <form method="POST" action="" enctype=multipart/form-data>
-                    {{ form.hidden_tag() }}
-            
-                    <!-- Date requested -->
-                    <div class="form-group row">
-                      <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
-                      <div class="col-sm-4">
-                        {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
-                      </div>
-                      <span id = "daterror"></span>
+              <fieldset class="form-group px-3 py-1 md-2">
+                <form id="request_form" method="POST" action="" enctype=multipart/form-data>
+                  {{ form.hidden_tag() }}
+          
+                  <!-- Date requested -->
+                  <div class="form-group row">
+                    <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
+                    <div class="col-sm-4">
+                      {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
+                      <div class="error-message pt-1" id = "date_error"></div>
                     </div>
-                    
-                    <div class="form-group row">
-                      <div class="col-sm-2"><strong>Base Price</strong></div>
-                      <div class="col-md-10" id="base_price">{{base}}</div>
-                   
-                    </div>
+                  </div>
+                  
+                  <div class="form-group row">
+                    <div class="col-sm-2"><strong>Base Price</strong></div>
+                    <div class="col-md-10" id="base_price">{{base}}</div>
+                  </div>
 
-                    <div class="form-group row">
-                      <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus<span style="color:#ff0000">*</span></strong></label>
-                      <div class="col-sm-3">
-                        {{ form.bonus(class="form-control", id="bonus") }}
-                      </div>
+                  <div class="form-group row">
+                    <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus</strong></label>
+                    <div class="col-sm-3">
+                      {{ form.bonus(class="form-control", id="bonus") }}
                     </div>
+                  </div>
 
-                    <div class="form-group row">
-                      <div class="col-sm-5">
-                        <a class="btn btn-secondary" href="{{url_for('main.dashboard')}}">Cancel</a>
-                        {{ form.submit(class="btn btn-primary") }}
-                      </div>
+                  <div class="form-group row">
+                    <div class="col-sm-5">
+                      <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
+                      {{ form.submit(class="btn btn-primary", id="submit") }}
                     </div>
-
-                </fieldset>
+                    <div class="error-message" id = "form_error"></div>
+                  </div>
+              </fieldset>
               </form>
 
             </div>

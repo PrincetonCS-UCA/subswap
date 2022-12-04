@@ -56,7 +56,7 @@ class User(db.Model, UserMixin):
     def fulfilled_shifts(self):
         return [request.shift for request in self.inactive_requests()]
 
-    def is_duplicate(self, request):
+    def is_request_duplicate(self, request):
         for req in self.active_requests():
             if req.is_duplicate(request):
                 return True

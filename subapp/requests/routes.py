@@ -86,7 +86,7 @@ def edit_request(requestid):
     form.date_requested.data = rqst.date_requested.date()
     form.bonus.data = rqst.bonus
 
-    return render_template('requests/edit_request.html', form=form, shiftid=shift.id, shifts=current_user.schedule, base=rqst.base_price)
+    return render_template('requests/edit_request.html', form=form, shiftid=shift.id, shifts=current_user.schedule, base=rqst.base_price, day=shift.day)
 
 
 @ requests.route("/request/<requestid>/sub", methods=['POST', 'GET'])
