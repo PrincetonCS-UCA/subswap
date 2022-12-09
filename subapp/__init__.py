@@ -89,7 +89,7 @@ def register_cli_commands(app):
 
 
 def configure_logging(app):
-    if app.config['LOG_WITH_GUNICORN']:
+    if app.config['LOG_WITH_GUNICORN'] == "True":
         gunicorn_error_logger = logging.getLogger('gunicorn.error')
         app.logger.handlers.extend(gunicorn_error_logger.handlers)
         app.logger.setLevel(logging.DEBUG)

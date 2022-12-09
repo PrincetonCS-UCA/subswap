@@ -1,0 +1,17 @@
+Flask-Bootstrap
+Flask
+Flask-Login
+Flask-Mail
+Flask-SQLAlchemy
+Flask-WTF
+gunicorn
+Jinja2
+python-cas
+regex
+SQLAlchemy
+WTForms
+Flask-Migrate
+Pillow
+Werkzeug
+pandas
+psycopg2-binary
