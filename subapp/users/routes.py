@@ -9,7 +9,7 @@ users = Blueprint('users', __name__, template_folder='templates')
 
 cas_client = CASClient(
     version=3,
-    service_url='http://localhost:5000/login?next=%2F',
+    service_url='http://moincoin.onrender.com/login?next=%2F',
     server_url='https://fed.princeton.edu/cas/login'
 )
 
