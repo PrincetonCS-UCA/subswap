@@ -45,3 +45,4 @@ config = {
 
 PRICING_ALG = "default"
 COURSES = ["COS126", "COS2xx"]
+ADMINS = ["mmir", "lumbroso"]

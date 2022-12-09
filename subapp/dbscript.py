@@ -53,6 +53,7 @@ def create_users():
     users.append(User(netid='ali', balance=250))
     users.append(User(netid='rehma', balance=450))
     users.append(User(netid='vini', balance=500))
+    users.append(User(netid='lumbroso', balance=1000, role='Admin'))
 
     for i, user in enumerate(users):
         db.session.add(user)
@@ -89,7 +90,7 @@ def create_requests():
     finalDates = random.sample(sum(dates.values(), []), 10)
 
     requests = []
-    for i in range(10):
+    for i in range(20):
         requests.append(Request(swap=random.choice([True, False]),
                                 date_requested=finalDates[i],
                                 base_price=random.randint(5, 30),
