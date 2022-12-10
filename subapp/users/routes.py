@@ -10,7 +10,8 @@ users = Blueprint('users', __name__, template_folder='templates')
 cas_client = CASClient(
     version=3,
     service_url='http://moincoin.onrender.com/login?next=%2F',
-    server_url='https://fed.princeton.edu/cas/login'
+    server_url='https://cast.cs.princeton.edu/cas/login'
+    # server_url='https://fed.princeton.edu/cas/login'
 )
 
 # reference: https://djangocas.dev/blog/python-cas-flask-example/
