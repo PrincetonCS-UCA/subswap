@@ -1,19 +1,13 @@
-from cas import CASClient
 from flask import session, Blueprint, redirect, request, url_for, render_template, jsonify
 from subapp.models import User
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
+from subapp import cas_client
 
 users = Blueprint('users', __name__, template_folder='templates')
 
-cas_client = CASClient(
-    version=3,
-    service_url='http://localhost:5000/login?next=%2F',
-    server_url='https://fed.princeton.edu/cas/login'
-)
 
 # reference: https://djangocas.dev/blog/python-cas-flask-example/
-
 
 @users.route('/login')
 def login():
