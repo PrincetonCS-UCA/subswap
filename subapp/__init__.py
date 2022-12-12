@@ -10,6 +10,7 @@ from flask_bootstrap import Bootstrap
 from flask.logging import default_handler
 from click import echo
 from config import config
+from cas import CASClient
 
 # ==============================================================================
 # Configuration
@@ -18,6 +19,7 @@ from config import config
 db = SQLAlchemy()
 login_manager = LoginManager()
 bootstrap = Bootstrap()
+cas_client = CASClient(version=3)
 
 # ==============================================================================
 # Application Factory Function
@@ -36,6 +38,9 @@ def create_app():
     register_blueprints(app)
     configure_logging(app)
     register_cli_commands(app)
+    configure_cas(app)
+    # print(cas_client.server_url)
+    # print(cas_client.service_url)
 
     # check if the database needs to be initialized
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -55,6 +60,11 @@ def create_app():
 # ==============================================================================
 # Helper functions
 # ==============================================================================
+
+
+def configure_cas(app):
+    cas_client.server_url = app.config['CAS_SERVER_URL']
+    cas_client.service_url = app.config['CAS_SERVICE_URL']
 
 
 def initialize_extensions(app):

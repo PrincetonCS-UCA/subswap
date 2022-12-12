@@ -10,13 +10,15 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', default='wubalubadubub')
     # if database url is not given, an sqllite datebase is stored in the
     # instance folder
-
+    CAS_SERVER_URL = os.environ.get(
+        'CAS_SERVER_URL', default='https://fed.princeton.edu/cas/login')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_WITH_GUNICORN = os.environ.get('LOG_WITH_GUNICORN', default=False)
 
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
+    CAS_SERVICE_URL = 'http://moincoin.onrender.com/login?next=%2F'
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace(
             "postgres://", "postgresql://", 1)
@@ -26,12 +28,14 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    CAS_SERVICE_URL = 'http://localhost:5000/login?next=%2F'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         f"sqlite:///{os.path.join(BASEDIR, 'instance', 'data-dev.db')}"
 
 
 class TestingConfig(Config):
     TESTING = True
+    CAS_SERVICE_URL = 'http://localhost:5000/login?next=%2F'
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI',
                                              default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'test.db')}")
     WTF_CSRF_ENABLED = False
