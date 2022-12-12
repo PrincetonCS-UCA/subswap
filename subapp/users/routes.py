@@ -3,6 +3,7 @@ from subapp.models import User
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
 from subapp import cas_client
+from config import ADMINS
 
 users = Blueprint('users', __name__, template_folder='templates')
 
