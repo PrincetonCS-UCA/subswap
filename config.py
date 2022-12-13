@@ -23,10 +23,11 @@ class ProductionConfig(Config):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace(
             "postgres://", "postgresql://", 1)
     else:
-        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASEDIR, 'instance', 'prod-app.db')}"
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASEDIR, 'instance', 'data-dev.db')}"
 
 
 class DevelopmentConfig(Config):
+    FLASK_ENV = 'development'
     DEBUG = True
     CAS_SERVICE_URL = 'http://localhost:5000/login?next=%2F'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \

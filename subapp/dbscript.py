@@ -88,9 +88,9 @@ def create_requests():
         else:
             dates[weekdays[start_date.isoweekday()]].append(start_date)
         start_date += timedelta(days=1)
-    print(dates)
+
     finalDates = random.sample(sum(dates.values(), []), 20)
-    print(finalDates)
+
     requests = []
     for i in range(20):
         requests.append(Request(swap=random.choice([True, False]),
@@ -180,10 +180,13 @@ def user_shifts():
     users = User.query.all()
     shifts = Shift.query.all()
     cos126 = Shift.query.filter_by(course="COS126").all()
+    cos226 = Shift.query.filter_by(course="COS2xx").all()
 
     for i, user in enumerate(users):
         if i == 0:
             user.schedule.extend(cos126[:2])
+            user.schedule.extend(cos226[:2])
+
         elif i > 3:
             x = random.sample(shifts, 2)
             user.schedule.append(x[0])

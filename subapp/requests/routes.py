@@ -1,5 +1,5 @@
 from flask import (redirect, url_for, render_template,
-                   request, jsonify, flash, session)
+                   request, jsonify, flash, session, current_app)
 from flask.blueprints import Blueprint
 from flask_login import login_required, current_user
 from datetime import datetime
@@ -45,6 +45,7 @@ def create_request(shiftid):
 
         return redirect(url_for('main.dashboard'))
     else:
+        current_app.logger.error("Request form", form.errors)
         print(form.errors)
 
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule, day=shift.day)
