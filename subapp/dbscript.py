@@ -88,9 +88,9 @@ def create_requests():
         else:
             dates[weekdays[start_date.isoweekday()]].append(start_date)
         start_date += timedelta(days=1)
-
-    finalDates = random.sample(sum(dates.values(), []), 10)
-
+    print(dates)
+    finalDates = random.sample(sum(dates.values(), []), 20)
+    print(finalDates)
     requests = []
     for i in range(20):
         requests.append(Request(swap=random.choice([True, False]),

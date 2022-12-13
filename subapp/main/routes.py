@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from config import COURSES
 from subapp import dbscript
 from datetime import date
-from subapp import app
+
 main = Blueprint('main', __name__,
                  template_folder='templates',
                  static_folder='static',
