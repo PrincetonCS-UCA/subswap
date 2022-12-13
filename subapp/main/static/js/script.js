@@ -5,6 +5,7 @@
 
 var modal_button = document.getElementById("swap_modal_button");
 var swap_options = document.getElementById("swap_modal_body");
+var base_url = window.location.origin;
 modal_button.onclick = function () {
     swap_options.innerHTML = '';
     // Get date of shift
@@ -12,7 +13,7 @@ modal_button.onclick = function () {
     requestid = encodeURIComponent(requestid)
 
     // show list of possible shifts
-    fetch('http://localhost:5000/swap_shifts/' + requestid).then(function (response) {
+    fetch(base_url + '/swap_shifts/' + requestid).then(function (response) {
         response.json().then(function (data) {
             var optionHTML = '';
 

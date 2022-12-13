@@ -1,4 +1,5 @@
 let request_date = document.getElementById("date_requested")
+let base_url = window.location.origin;
 
 
 let valid_date = false;
@@ -29,7 +30,7 @@ request_date.onchange = function () {
         let shiftid = window.location.href.split('/');
         shiftid = shiftid[shiftid.length - 2];
         var base_price = document.getElementById("base_price");
-        fetch('http://localhost:5000/calculate_base_price?shiftid=' + shiftid + '&date=' + date).then(function (response) {
+        fetch(base_url + '/calculate_base_price?shiftid=' + shiftid + '&date=' + date).then(function (response) {
             response.json().then(function (data) {
                 if (data.status == "True") {
                     base_price.innerHTML = data.price
