@@ -1,10 +1,11 @@
-from flask import make_response, render_template, redirect, url_for, session
+from flask import make_response, render_template, redirect, url_for, session, current_app
 from flask.blueprints import Blueprint
 from subapp.models import Request
 from flask_login import login_required, current_user
 from config import COURSES
 from subapp import dbscript
 from datetime import date
+from subapp import app
 main = Blueprint('main', __name__,
                  template_folder='templates',
                  static_folder='static',

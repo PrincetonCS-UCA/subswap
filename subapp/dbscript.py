@@ -1,3 +1,4 @@
+from flask import current_app
 from subapp import db
 from subapp.models import User, Shift, Request
 from datetime import time, timedelta, datetime, date
@@ -31,6 +32,7 @@ def create_dummy_data(all=False,
         request_shifts()
     # if all or swaprequests:
     #     swap_requests()
+    current_app.logger.info("Database initialized with dummy data.")
     print("Dummy data created.")
 
 # --------------------------------------------------------------------
