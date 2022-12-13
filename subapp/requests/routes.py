@@ -119,7 +119,7 @@ def swap_request(requestid):
     rqst.accepted = True
     rqst.accepted_by.append(current_user)
     rqst.date_accepted = datetime.today()
-    print("Request accepted.")
+    print("Swap request accepted.")
 
     # create new request for the swap shift
     shift_data = request.args.get("swap_shift_data")
@@ -159,6 +159,7 @@ def delete_request(requestid):
 def swap_shifts(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
     res = get_swap_options(rqst.date_requested)
+    print(res)
     return jsonify({'swap_shifts': res})
 
 
