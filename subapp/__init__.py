@@ -45,7 +45,7 @@ def create_app():
     # check if the database needs to be initialized
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     inspector = sa.inspect(engine)
-    if not inspector.has_table("user"):
+    if not inspector.has_table("user") or os.environ.get('WIPE_DB') == 'True':
         with app.app_context():
             from subapp import dbscript
             dbscript.create_dummy_data(all=True)
