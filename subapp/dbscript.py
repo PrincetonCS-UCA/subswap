@@ -1,6 +1,7 @@
 from flask import current_app
 from subapp import db
-from subapp.models import User, Shift, Request
+from subapp.models import User, Shift, Request, Role
+from subapp.requests.util import calc_base_price
 from datetime import time, timedelta, datetime, date
 import random
 from config import COURSES
@@ -15,23 +16,24 @@ def create_dummy_data(all=False,
                       ushifts=False,
                       rshifts=False,
                       urequests=False,
-                      swaprequests=False):
+                      roles=False):
     if all or reset:
         reset_db()
+    if all or roles:
+        Role.insert_roles()
     if all or users:
         create_users()
-    if all or requests:
-        create_requests()
     if all or shifts:
         create_shifts()
+    if all or requests:
+        create_requests()
     if all or ushifts:
         user_shifts()
     if all or urequests:
         user_requests()
     if all or rshifts:
         request_shifts()
-    # if all or swaprequests:
-    #     swap_requests()
+
     current_app.logger.info("Database initialized with dummy data.")
     print("Dummy data created.")
 
@@ -49,13 +51,16 @@ def reset_db():
 
 def create_users():
     users = []
-    users.append(User(netid='mmir', balance=1000, role='Admin'))
-    users.append(User(netid='tak', balance=50))
-    users.append(User(netid='ffakhro', balance=150))
-    users.append(User(netid='ali', balance=250))
-    users.append(User(netid='rehma', balance=450))
-    users.append(User(netid='vini', balance=500))
-    users.append(User(netid='lumbroso', balance=1000, role='Admin'))
+    cos126 = Role.query.filter_by(name='COS126').first()
+    cos2xx = Role.query.filter_by(name='COS2xx').first()
+    admin = Role.query.filter_by(name='ADMIN').first()
+    users.append(User(netid='mmir', balance=1000, role=admin))
+    users.append(User(netid='lumbroso', balance=1000, role=admin))
+    users.append(User(netid='tak', balance=1000, role=cos126))
+    users.append(User(netid='ffakhro', balance=1000, role=cos2xx))
+    users.append(User(netid='ali', balance=1000, role=cos2xx))
+    users.append(User(netid='rehma', balance=1000, role=cos126))
+    users.append(User(netid='vini', balance=1000, role=cos2xx))
 
     for i, user in enumerate(users):
         db.session.add(user)
@@ -89,15 +94,14 @@ def create_requests():
             dates[weekdays[start_date.isoweekday()]].append(start_date)
         start_date += timedelta(days=1)
 
-    finalDates = random.sample(sum(dates.values(), []), 20)
+    finalDates = random.sample(sum(dates.values(), []), 30)
 
     requests = []
-    for i in range(20):
-        requests.append(Request(swap=random.choice([True, False]),
-                                date_requested=finalDates[i],
-                                base_price=random.randint(5, 30),
-                                accepted=random.choice([True]*10 + [False]*5),
-                                bonus=random.randint(0, 15)))
+    for i in range(30):
+        requests.append(Request(date_requested=random.choice(finalDates),
+                                base_price=0,
+                                accepted=random.choice([True]*5 + [False]*15),
+                                bonus=random.randint(5, 50)))
 
     for request in requests:
         db.session.add(request)
@@ -112,7 +116,7 @@ def create_requests():
 
 def create_shifts():
     def dummy_enddate(created_date):
-        dt = datetime.combine(date.today(), created_date) + timedelta(hours=3)
+        dt = datetime.combine(date.today(), created_date) + timedelta(hours=2)
         return dt.time()
 
     days = ['Monday', 'Tuesday', 'Wednesday',
@@ -128,6 +132,8 @@ def create_shifts():
     end4 = dummy_enddate(start4)
     start5 = time(15, 30)
     end5 = dummy_enddate(start5)
+    start6 = time(19, 00)
+    end6 = dummy_enddate(start6)
 
     shifts = []
     shifts.append(Shift(day=random.choice(days), start=start1,
@@ -140,6 +146,8 @@ def create_shifts():
                   end=end4, course=random.choice(COURSES)))
     shifts.append(Shift(day=random.choice(days), start=start5,
                   end=end5, course=random.choice(COURSES)))
+    shifts.append(Shift(day=random.choice(days), start=start6,
+                  end=end6, course=random.choice(COURSES)))
 
     for shift in shifts:
         db.session.add(shift)
@@ -157,17 +165,13 @@ def user_requests():
     """
     Posted requests and accepted requests.
     """
-    subs = User.query.all()
-    nonsubs = User.query.all()[:3]
+    users = User.query.all()
     requests = Request.query.all()
-    for i, request in enumerate(requests):
-        if i < 3:
-            request.accepted_by.append(random.choice(subs))
-        if i < 2:
-            request.posted_by.append(nonsubs[0])
-        else:
-            user = random.choice(nonsubs[1:])
-            user.posted_requests.append(request)
+    for request in requests:
+        duo = random.sample(users, 2)
+        request.posted_by.append(duo[0])
+        if request.accepted:
+            request.accepted_by.append(duo[1])
 
     db.session.commit()
     print("Created User-Request relationships")
@@ -183,7 +187,7 @@ def user_shifts():
     cos226 = Shift.query.filter_by(course="COS2xx").all()
 
     for i, user in enumerate(users):
-        if i == 0:
+        if i <= 1:
             user.schedule.extend(cos126[:2])
             user.schedule.extend(cos226[:2])
 
@@ -201,30 +205,10 @@ def user_shifts():
 
 def request_shifts():
     requests = Request.query.all()
-    # sort schedule based on days
-    # sort requests based on days
-    # combine together
-    k = len(requests)
     for request in requests:
-        request.shift.append(random.choice(request.posted_by[0].schedule))
+        request.shift.append(random.choice(request.posted().schedule))
+        request.base_price = calc_base_price(
+            request.shift[0].id, startdate=request.date_requested, ignore=True)
 
     db.session.commit()
     print("Created Request-Shift relationships")
-
-# 5. Swappable requests
-
-
-def swap_requests():
-    requests = Request.query.all()
-    for i in range(0, len(requests), 2):
-        # get shifts that this user hasn't requested something for
-        requested_shifts = requests[i].posted_by[0].active_requests()
-        temp = [(r.shift[0], r.date_posted) for r in requested_shifts]
-        requested_shifts = {}
-        for tup in temp:
-            if tup[0] not in requested_shifts:
-                requested_shifts[tup[0]] = [tup[1]]
-            else:
-                requested_shifts[tup[0]].append(tup[1])
-
-        requests[i].swap_requests.append()

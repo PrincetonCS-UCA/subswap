@@ -50,4 +50,6 @@ config = {
 
 PRICING_ALG = "default"
 COURSES = ["COS126", "COS2xx"]
+PERMISSIONS = {"COS126": 1, "COS2xx": 2, "ADMIN": 4}
+ROLES = {"COS126": [1], "COS2xx": [1, 2], "ADMIN": [1, 2, 4]}
 ADMINS = ["mmir", "lumbroso"]

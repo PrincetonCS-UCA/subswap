@@ -16,7 +16,6 @@
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
                 {% for course in requests %}
-                  {% if current_user.role in ["Admin", course] %}
                   <li class="nav-item">
                     {% if loop.index == 1%}
                     <a class="nav-link active" href="#{{course|escape}}" role="tab" aria-controls="{{course|escape}}", aria-selected="true">{{course|escape}}</a>
@@ -24,14 +23,12 @@
                     <a class="nav-link" href="#{{course|escape}}" role="tab" aria-controls="{{course|escape}}", aria-selected="false">{{course|escape}}</a>
                     {% endif %}
                   </li>
-                  {% endif %}
                 {% endfor %}
               </ul>
             </div>
             <div class="card-body">
               <div class="tab-content mt-3">
                 {% for course in requests %}
-                  {% if current_user.role in ["Admin", course] %}
                     {% if loop.index == 1 %}
                         <div class="tab-pane active" id="{{course|escape}}" role="tabpanel">
                     {% else %}
@@ -124,7 +121,6 @@
                           
                         </table>
                       </div>
-                  {% endif %}
                 {% endfor %}
               </div>
             </div>

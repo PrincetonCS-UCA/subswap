@@ -15,7 +15,7 @@ import math
 #     pass
 
 
-def calc_base_price(shiftid, startdate):
+def calc_base_price(shiftid, startdate, ignore=False):
     request_date = startdate
     if (type(startdate) == str):
         request_date = datetime.strptime(
@@ -23,6 +23,8 @@ def calc_base_price(shiftid, startdate):
     num_days = request_date - \
         datetime.combine(date.today(), datetime.min.time())
     price = int(50/math.log(num_days.days, 2)) if num_days.days > 1 else 60
+    if ignore:
+        return price
 
     return {'status': "True" if price < current_user.balance else "False", 'price': price}
 

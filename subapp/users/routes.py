@@ -1,5 +1,5 @@
 from flask import session, Blueprint, redirect, request, url_for, render_template, jsonify
-from subapp.models import User
+from subapp.models import User, Role
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
 from subapp import cas_client
@@ -42,7 +42,7 @@ def login():
 
             # testing pur
             if user in ADMINS:
-                new_user.role = "Admin"
+                new_user.role = Role.query.filter(name='ADMIN').first()
 
             db.session.add(new_user)
             db.session.commit()

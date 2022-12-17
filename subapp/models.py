@@ -1,6 +1,7 @@
 from . import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
+from config import ROLES, PERMISSIONS
 
 a_posted_requests = db.Table("posted_requests",
                              db.Column("user_id", db.Integer, db.ForeignKey(
@@ -27,9 +28,9 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     netid = db.Column(db.String(120), unique=True, nullable=False)
     balance = db.Column(db.Integer, default=0)
-    role = db.Column(db.String(120), default="user")
     sub = db.Column(db.Boolean, default=False, nullable=False)
 
+    role_id = db.Column(db.Integer, db.ForeignKey("role.id"))
     posted_requests = db.relationship(
         "Request", secondary=a_posted_requests, back_populates='posted_by')
 
@@ -63,10 +64,15 @@ class User(db.Model, UserMixin):
 
         return False
 
+    def can(self, perm):
+        return self.role is not None and self.role.has_permission(perm)
+
+    def is_admin(self):
+        return self.can(PERMISSIONS['ADMIN'])
+
 
 class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    swap = db.Column(db.Boolean, default=False, nullable=False)
     base_price = db.Column(db.Integer, nullable=False)
     accepted = db.Column(db.Boolean, default=False, nullable=False)
     bonus = db.Column(db.Integer, nullable=False, default=0)
@@ -132,3 +138,44 @@ class Shift(db.Model):
 
     def user_requests(self, user):
         return [request for request in self.requests if request.posted_by == user]
+
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    permissions = db.Column(db.Integer)
+    users = db.relationship("User", backref='role', lazy='dynamic')
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions = 0
+
+    @staticmethod
+    def insert_roles():
+        for r in ROLES:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.reset_permissions()
+            for perm in ROLES[r]:
+                role.add_permission(perm)
+            db.session.add(role)
+        db.session.commit()
+
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permissions += perm
+
+    def remove_permission(self, perm):
+        if self.has_permission(perm):
+            self.permissions -= perm
+
+    def reset_permissions(self):
+        self.permissions = 0
+
+    def has_permission(self, perm):
+        return self.permissions & perm == perm
+
+    def __repr__(self):
+        return '<Role %r>' % self.name

@@ -2,7 +2,7 @@ from flask import make_response, render_template, redirect, url_for, session, cu
 from flask.blueprints import Blueprint
 from subapp.models import Request
 from flask_login import login_required, current_user
-from config import COURSES
+from config import COURSES, PERMISSIONS
 from subapp import dbscript
 from datetime import date
 
@@ -43,9 +43,9 @@ def dashboard():
 
     requests = {}
     for course in COURSES:
-        requests[course] = [x for x in active_requests if x.get_course()
-                            == course]
-
+        if current_user.can(PERMISSIONS[course]) or current_user.is_admin():
+            requests[course] = [x for x in active_requests if x.get_course()
+                                == course]
     html = render_template('main/dashboard.html',
                            requests=requests, current_user=current_user)
     response = make_response(html)
