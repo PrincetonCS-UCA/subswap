@@ -3,21 +3,22 @@
 // verify checkboxes
 // send swap request
 
-var modal_button = document.getElementById("swap_modal_button");
+var modal_buttons = document.getElementsByTagName("button"),
+    len = modal_buttons.length,
+    i;
 
-var base_url = window.location.origin;
-modal_button.onclick = function () {
-
+function modalButtonClick() {
+    var base_url = window.location.origin;
     // Get date of shift
     let requestid = $(this).data('requestid')
+    console.log("Here:" + requestid)
     requestid = encodeURIComponent(requestid)
     var swap_options = document.getElementById("swap_modal_body_" + requestid);
-    swap_options.innerHTML = '';
+    console.log(swap_options);
     // show list of possible shifts
     fetch(base_url + '/swap_shifts/' + requestid).then(function (response) {
         response.json().then(function (data) {
             var optionHTML = '';
-            console.log(data.swap_shifts)
             for (let i = 0; i < data.swap_shifts.length; i++) {
                 optionHTML += '<div class="form-check">';
                 optionHTML += '<label>';
@@ -26,10 +27,14 @@ modal_button.onclick = function () {
                 optionHTML += '</div>'
             }
             swap_options.innerHTML = optionHTML;
-            console.log(swap_options.innerHTML)
-
         })
     });
+}
+
+for (i = 0; i < len; i += 1) {
+    if (modal_buttons[i].hasAttribute("data-requestid")) {
+        modal_buttons[i].onclick = modalButtonClick;
+    }
 }
 
 

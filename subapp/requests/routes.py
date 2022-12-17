@@ -158,8 +158,7 @@ def delete_request(requestid):
 @login_required
 def swap_shifts(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
-    res = get_swap_options(rqst.date_requested)
-    print(res)
+    res = get_swap_options(rqst.date_requested, rqst.get_course())
     return jsonify({'swap_shifts': res})
 
 

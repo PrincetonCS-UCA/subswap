@@ -29,7 +29,7 @@ def calc_base_price(shiftid, startdate, ignore=False):
     return {'status': "True" if price < current_user.balance else "False", 'price': price}
 
 
-def get_swap_options(request_date):
+def get_swap_options(request_date, course):
     """
     Genereates possible swap shifts for the current user around startdate.
     Looks for possible shifts in a 10 day window around startdate.
@@ -40,20 +40,21 @@ def get_swap_options(request_date):
     #     startdate, '%Y-%m-%d')
     num_days = request_date - \
         datetime.combine(date.today(), datetime.min.time())
-    dates = [request_date - timedelta(days=x)
-             for x in range(1, num_days.days)]
-    dates += [request_date + timedelta(days=x)
-              for x in range(10 - num_days.days)]
+    dates = [request_date - timedelta(days=x) for x in range(1, num_days.days)]
+    dates += [request_date + timedelta(days=x) for x in range(10)]
     dates.sort()
 
     # we have a list of dates
     day_shifts = {}
 
     for shift in current_user.schedule:
-        if shift.day not in day_shifts:
-            day_shifts[shift.day] = [shift]
-        else:
-            day_shifts[shift.day].append(shift)
+        if len(day_shifts) > 10:
+            break
+        if shift.course == course:
+            if shift.day not in day_shifts:
+                day_shifts[shift.day] = [shift]
+            else:
+                day_shifts[shift.day].append(shift)
 
     swap_shift_list = []
 
