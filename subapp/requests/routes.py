@@ -45,7 +45,7 @@ def create_request(shiftid):
 
         return redirect(url_for('main.dashboard'))
     else:
-        current_app.logger.error("Request form", form.errors)
+        # current_app.logger.error("Request form", form.errors)
         print(form.errors)
 
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule, day=shift.day)
