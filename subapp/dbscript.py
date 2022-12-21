@@ -56,11 +56,11 @@ def create_users():
     admin = Role.query.filter_by(name='ADMIN').first()
     users.append(User(netid='mmir', balance=1000, role=admin))
     users.append(User(netid='lumbroso', balance=1000, role=admin))
-    users.append(User(netid='tak', balance=1000, role=cos126))
+    users.append(User(netid='atli', balance=1000, role=cos126))
+    users.append(User(netid='de12', balance=1000, role=cos2xx))
+    users.append(User(netid='josephlou', balance=1000, role=cos2xx))
+    users.append(User(netid='lanceg', balance=1000, role=cos126))
     users.append(User(netid='ffakhro', balance=1000, role=cos2xx))
-    users.append(User(netid='ali', balance=1000, role=cos2xx))
-    users.append(User(netid='rehma', balance=1000, role=cos126))
-    users.append(User(netid='vini', balance=1000, role=cos2xx))
 
     for i, user in enumerate(users):
         db.session.add(user)
