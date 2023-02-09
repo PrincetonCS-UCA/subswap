@@ -6,14 +6,6 @@
 
 <div class="container-fluid">
   <div class="row align-items-start">
-
-    <!-- sidebar -->
-    <div class="sticky sidebar_container col-md-2">
-      {% with tags_by_category=tags_by_category %} {% include
-      "main/sidebar.html" %} {%endwith%}
-    </div>
-    <!-- end sidebar -->
-
     <div class="col-md-9">
       <section class="py-5">
         <div class="items_container container px-4 px-lg-5">
@@ -69,7 +61,7 @@
               <fieldset class="form-group px-3 py-1 md-2">
                 <form id="request_form" method="POST" action="" enctype=multipart/form-data>
                   {{ form.hidden_tag() }}
-          
+
                   <!-- Date requested -->
                   <div class="form-group row">
                     <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
@@ -87,7 +79,7 @@
                       <div class="error-message pt-1" id = "date_error"></div>
                     </div>
                   </div>
-                  
+
                   <div class="form-group row">
                     <div class="col-sm-2"><strong>Base Price</strong></div>
                     <div class="col-md-10" id="base_price">{{base}}</div>

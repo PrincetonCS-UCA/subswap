@@ -3,15 +3,7 @@
 
 <div class="container-fluid">
   <div class="row align-items-start">
-
-    <!-- sidebar -->
-    <div class="sticky sidebar_container col-md-2">
-      {% with tags_by_category=tags_by_category %} {% include
-      "main/sidebar.html" %} {%endwith%}
-    </div>
-    <!-- end sidebar -->
-
-    <div class="col-md-9">
+    <div class="col-md-12">
       <section class="py-5">
         <div class="items_container container px-4 px-lg-5">
           <div class="card">
@@ -55,7 +47,7 @@
                       </tr>
                       {% endfor %}
                     </tbody>
-                    
+
                   </table>
 
                 </div>

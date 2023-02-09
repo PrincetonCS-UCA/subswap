@@ -2,14 +2,7 @@
 
 <div class="container-fluid">
   <div class="row align-items-start">
-
-    <!-- sidebar -->
-    <div class="sticky sidebar_container col-md-2">
-      {% with tags_by_category=tags_by_category %} {% include
-      "main/sidebar.html" %} {%endwith%}
-    </div>
-    <!-- end sidebar -->
-    <div class="col-md-9">
+    <div class="col-md-12">
       <section class="py-5">
         <div class="items_container container px-4 px-lg-5">
           <div class="card">
@@ -49,7 +42,7 @@
                             {% for request in requests[course] %}
                             <tr>
                               <th scope="row">{{request.posted_by[0].netid}}</th>
-                              
+
                               <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
                               <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
                               </td>
@@ -64,7 +57,7 @@
                                 {% else %}
                                 <a href="{{url_for('requests.sub_request', requestid=request.id)}}" class="btn btn-primary"
                                   role="button">Sub</a>
-      
+
                                 <button
                                     type="button"
                                     class="btn btn-primary"
@@ -118,7 +111,7 @@
                               </div>
                             {% endfor %}
                           </tbody>
-                          
+
                         </table>
                       </div>
                 {% endfor %}
@@ -128,7 +121,7 @@
         </div>
       </section>
     </div>
-    
+
     <!-- left padding -->
     <div class="col-md-1"></div>
   </div>
