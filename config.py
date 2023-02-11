@@ -18,7 +18,7 @@ class Config:
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
-    CAS_SERVICE_URL = 'http://moincoin.onrender.com/login?next=%2F'
+    CAS_SERVICE_URL = os.environ.get('CAS_SERVICE_URL')
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace(
             "postgres://", "postgresql://", 1)
