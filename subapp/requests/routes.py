@@ -23,7 +23,6 @@ requests = Blueprint('requests', __name__,
 def create_request(shiftid):
     # shift requested
     shift = Shift.query.filter_by(id=shiftid).first()
-
     form = RequestForm()
 
     # shifts in curr user schedule
@@ -58,6 +57,8 @@ def edit_request(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
     if current_user != rqst.posted():
         # abort(403)
+        return redirect(url_for('main.dashboard'))
+    if rqst.accepted:
         return redirect(url_for('main.dashboard'))
 
     shift = rqst.shift[0]
@@ -97,6 +98,11 @@ def sub_request(requestid):
     if rqst.posted() == current_user:
         flash("Cannot accept your own request")
         return redirect(url_for('main.dashboard'))
+
+    if rqst.accepted:
+        flash("Request already accepted")
+        return redirect(url_for('main.dashboard'))
+
     rqst.accepted = True
     rqst.accepted_by.append(current_user)
     rqst.date_accepted = datetime.today()
@@ -113,6 +119,10 @@ def swap_request(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
     if rqst.posted() == current_user:
         flash("Cannot accept your own request")
+        return redirect(url_for('main.dashboard'))
+
+    if rqst.accepted:
+        flash("Request already accepted")
         return redirect(url_for('main.dashboard'))
 
     # mark as accepted
@@ -145,6 +155,9 @@ def swap_request(requestid):
 def delete_request(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
     if rqst.posted() == current_user:
+        if rqst.accepted:
+            flash("Cannot delete accepted request")
+            return redirect(url_for('main.dashboard'))
         db.session.delete(rqst)
         current_user.balance += rqst.get_price()
         session['credits'] = current_user.balance
@@ -173,4 +186,11 @@ def calculate_base_price():
     else:
         res = requests.get(PRICING_ALG)
 
+    return jsonify(res)
+
+@requests.route("/check_balance")
+@login_required
+def check_balance():
+
+    res = {'balance' : current_user.balance}
     return jsonify(res)

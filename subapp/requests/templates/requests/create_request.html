@@ -5,7 +5,7 @@
 <link href="{{ url_for('requests.static', filename='css/form.css') }}" rel="stylesheet">
 <div class="container-fluid">
   <div class="row align-items-start">
-    <div class="col-md-9">
+    <div class="col-md-12">
       <section class="py-5">
         <div class="items_container container px-4 px-lg-5">
           <div class="card pb-3">
@@ -96,6 +96,7 @@
                         {% else %}
                           {{ form.bonus(class="form-control", id="bonus") }}
                         {% endif %}
+                        <div class="error-message pt-1" id = "bonus_error"></div>
                       </div>
                     </div>
 
