@@ -1,0 +1,69 @@
+{% extends "main/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+
+
+<div class="d-flex justify-content-center align-items-center container text-center" style="margin-top: 100px">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Upload Schedule</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.add_schedule') }}" enctype=multipart/form-data>
+                    {{ schedule_form.hidden_tag() }}
+
+                    <div class="form-group row">
+                        <label for="cos226" class="col-sm-4 col-form-label">COS2xx File<span
+                                style="color:#ff0000">*</span></label>
+                        <div class="col-sm-8">
+                            {{ schedule_form.cos226(class="form-control", id="cos226") }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="cos126" class="col-sm-4 col-form-label">COS126 File<span
+                                style="color:#ff0000">*</span></label>
+                        <div class="col-sm-8">
+                            {{ schedule_form.cos126(class="form-control", id="cos126") }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-4">
+                            <a class="btn btn-secondary btn-block" href="{{ url_for('main.dashboard') }}">Cancel</a>
+                        </div>
+                        <div class="col-sm-4">
+                            {{ schedule_form.submit(class="btn btn-primary btn-block") }}
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center align-items-center container text-center" style="margin-top: 50px">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Manage Users</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row justify-content-center">
+                    <div class="col-sm-8 mb-3">
+                        <input id="search" type="text" form="filters" name="keyword" maxlength="200"
+                            placeholder="Search users" class="form-control form-control-lg" />
+                    </div>
+                </div>
+
+                <div id='users'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

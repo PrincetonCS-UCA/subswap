@@ -1,13 +1,17 @@
 {% extends "main/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
+<link href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+
 <div class="d-flex justify-content-center align-items-center container">
     <div class="card text-center pt-5">
         <div class="card-header">
             <h3>Upload Schedule</h3>
         </div>
         <div class="card-body">
-            <form method="POST" action="" enctype=multipart/form-data>
+            <form method="POST" action="{{ url_for('admin.add_schedule') }}" enctype=multipart/form-data>
                 {{ form.hidden_tag() }}
 
                 <div class="row pt-4">
@@ -37,4 +41,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('select').multipleSelect({
+            multiple: true,
+            multipleWidth: 60
+        })
+    })
+</script>
 {% endblock content %}

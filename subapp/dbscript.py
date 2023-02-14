@@ -72,8 +72,6 @@ def create_users():
 # --------------------------------------------------------------------
 
 # create dummy requests
-
-
 def create_requests():
     dates = {}
     weekdays = {1: "Monday",
