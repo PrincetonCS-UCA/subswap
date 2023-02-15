@@ -30,6 +30,7 @@ def homepage():
     response = make_response(html)
     return response
 
+
 @main.route("/about", methods=['GET'])
 def about():
     return render_template('main/about.html')
@@ -59,8 +60,17 @@ def dashboard():
 @main.route("/profile", methods=['GET', 'PUT'])
 @login_required
 def profile():
-    html = render_template('main/profile.html', shifts=current_user.schedule,
-                           requests=current_user.accepted_requests, history=current_user.inactive_requests())
+    day_order = {
+        "Monday": 0,
+        "Tuesday": 1,
+        "Wednesday": 2,
+        "Thursday": 3,
+        "Friday": 4,
+        "Saturday": 5,
+        "Sunday": 6
+    }
+    html = render_template('main/profile.html', shifts=current_user.schedule.sort(key=lambda x: day_order[x.day]),
+                           requests=current_user.accepted_requests.sort(key=lambda x: x.date_posted), history=current_user.inactive_requests().sort(key=lambda x: x.date_posted))
     return make_response(html)
 
 

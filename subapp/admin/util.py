@@ -19,7 +19,7 @@ def permission_required(permission):
 
 
 def admin_required(f):
-    return permission_required(PERMISSIONS['ADMIN'])(f)
+    return permission_required(PERMISSIONS['Admin'])(f)
 
 
 def save_files(cos226, cos126):

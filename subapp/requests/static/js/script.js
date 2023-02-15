@@ -7,6 +7,7 @@ let valid_date = false;
 
 request_date.onchange = function () {
     valid_date = false;
+    submit_button.disabled = true;
     // get date entered by user
     let date = request_date.value;
 

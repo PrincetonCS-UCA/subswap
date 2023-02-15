@@ -53,7 +53,7 @@ def create_users():
     users = []
     cos126 = Role.query.filter_by(name='COS126').first()
     cos2xx = Role.query.filter_by(name='COS2xx').first()
-    admin = Role.query.filter_by(name='ADMIN').first()
+    admin = Role.query.filter_by(name='Admin').first()
     users.append(User(netid='mmir', balance=1000, role=admin))
     users.append(User(netid='lumbroso', balance=1000, role=admin))
     users.append(User(netid='ramadan', balance=1000, role=cos2xx))

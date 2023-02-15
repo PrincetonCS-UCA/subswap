@@ -58,7 +58,7 @@
         <li id="myposts" class="nav-item">
           <a class="nav-link" href="{{url_for('main.profile')}}" >Profile</a>
         </li>
-        {% if current_user.role.name == 'ADMIN' %}
+        {% if current_user.role.name == 'Admin' %}
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('admin.add_schedule')}}">Admin</a>
         </li>
