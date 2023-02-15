@@ -47,8 +47,9 @@ def dashboard():
         Request.accepted == False).filter(Request.date_requested >= date.today()).order_by(Request.date_requested.asc()).all()
 
     requests = {}
+    
     for course in COURSES:
-        if current_user.can(PERMISSIONS[course]) or current_user.is_admin():
+        if current_user.can(PERMISSIONS[course + '-accept']) or current_user.is_admin():
             requests[course] = [x for x in active_requests if x.get_course()
                                 == course]
     html = render_template('main/dashboard.html',

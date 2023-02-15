@@ -51,7 +51,7 @@ PRICING_ALG = "default"
 PRICING_SCHEME = [100, 70, 50, 40, 35, 32]
 ICO = 300
 COURSES = ["COS126", "COS2xx"]
-PERMISSIONS = {"COS126": 1, "COS126-sub": 1,
-               "COS2xx": 2, "COS2xx-sub": 2, "Admin": 4}
-ROLES = {"COS126": [1], "COS126-sub": [1], "COS2xx": [1, 2], "COS2xx-sub": [1, 2], "Admin": [1, 2, 4]}
+PERMISSIONS = {"COS126-accept": 1, "COS126-create": 2,
+               "COS2xx-accept": 4, "COS2xx-create": 8, "Admin": 16}
+ROLES = {"COS126-sub": [1], "COS126": [1, 2], "COS2xx-sub": [1, 4], "COS2xx": [1, 2, 4, 8], "Admin": [1, 2, 4, 8, 16]}
 ADMINS = ["mmir", "lumbroso"]

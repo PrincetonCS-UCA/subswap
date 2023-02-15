@@ -2,8 +2,9 @@ import os
 from flask import current_app
 import pandas as pd
 from datetime import time
-from subapp.models import User, Shift
+from subapp.models import User, Shift, Role
 from subapp import db
+from config import ICO, ADMINS
 
 
 def create_shift(shift, course):
@@ -29,16 +30,20 @@ def create_shift(shift, course):
     return new_shift
 
 
-def create_users(staff, course, sub):
+def create_users(staff, course):
     res = []
     for person in staff:
         user = User.query.filter_by(netid=person).first()
+        r = Role.query.filter_by(
+            name='Admin') if user.netid in ADMINS else Role.query.filter_by(name=course)
         if user is None:
-            new_user = User(netid=person, balance=100, role=course, sub=sub)
+            new_user = User(netid=person, balance=ICO, role=course)
             db.session.add(new_user)
             db.session.commit()
             res.append(new_user)
         else:
+            user.balance += ICO
+            db.session.commit()
             res.append(user)
     return res
 
@@ -51,32 +56,33 @@ def assign_shifts(df, course):
         value = list(value)
         value = [x for x in value if pd.notnull(x)]
 
-        # all columns execpt subs. create shift and user and create relatioship
+        # all columns execpt subs. create shift, assign users to that shift
         if i < len(df.columns) - 1:
             i += 1
             shift = create_shift(key, course)
-            users = create_users(value, course, False)
+            users = create_users(value, course)
             shift.staff.extend(users)
             db.session.commit()
         else:
             # subs
-            _ = create_users(value, course, True)
+            _ = create_users(value, course + '-sub')
 
 
 def update_schedule():
     # get csv files
-    cos226_path = os.path.join(
+    cos2xx_path = os.path.join(
         current_app.root_path, 'admin/static/files/cos226.csv')
     cos126_path = os.path.join(
         current_app.root_path, 'admin/static/files/cos126.csv')
-    cos226 = pd.read_csv(cos226_path)
+    cos2xx = pd.read_csv(cos2xx_path)
     cos126 = pd.read_csv(cos126_path)
 
     db.drop_all()
     db.create_all()
+    Role.insert_roles()
 
     # asign shifts to users
-    assign_shifts(cos226, 'COS226/217')
+    assign_shifts(cos2xx, 'COS2xx')
     assign_shifts(cos126, 'COS126')
 
     return True
