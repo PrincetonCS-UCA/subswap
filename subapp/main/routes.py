@@ -18,7 +18,7 @@ def homepage():
     """
     Route for the homepage.
 
-    Case 1: Logged in: Redirects to Found Feed (/found)
+    Case 1: Logged in: Redirects to Dashboard (/dashboard)
     Case 2: Logged out: Redirects to Splash Page (/)
     """
 

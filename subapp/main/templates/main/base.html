@@ -8,7 +8,7 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Favicon-->
   <link rel="icon" type="image/x-icon" href="{{url_for('main.static', filename='favicon.ico')}}" />
@@ -18,7 +18,7 @@
   <link href="{{url_for('main.static', filename='css/styles.css')}}" rel="stylesheet" />
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-  integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <!-- font awesome icons-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -38,11 +38,11 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <!-- leftside of nav -->
-      {% if current_user.is_authenticated %}
       <ul class="navbar-nav me-auto nav-pills">
-
+        <li id="about" class="nav-item">
+          <a class="nav-link" href="{{url_for('main.about')}}">About</a>
+        </li>
       </ul>
-      {% endif %}
 
       <!-- rightside of nav -->
       {% if current_user.is_authenticated %}
@@ -52,11 +52,11 @@
             Credits <span class="badge badge-dark">{{session['credits']}}</span>
           </a>
         </li>
-        <li id="found" class="nav-item">
+        <li id="dashboard" class="nav-item">
           <a class="nav-link" href="{{url_for('main.dashboard')}}">Dashboard</a>
         </li>
-        <li id="myposts" class="nav-item">
-          <a class="nav-link" href="{{url_for('main.profile')}}" >Profile</a>
+        <li id="profile" class="nav-item">
+          <a class="nav-link" href="{{url_for('main.profile')}}">Profile</a>
         </li>
         {% if current_user.role.name == 'Admin' %}
         <li class="nav-item">
@@ -65,15 +65,12 @@
         {% endif %}
       </ul>
 
-        <form
-          class="form-inline my-2 my-lg-0"
-          action="{{url_for('users.logout')}}"
-        >
-          <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">
-            Logout
-          </button>
-        </form>
-        {% endif %}
+      <form class="form-inline my-2 my-lg-0" action="{{url_for('users.logout')}}">
+        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">
+          Logout
+        </button>
+      </form>
+      {% endif %}
     </div>
   </nav>
 
@@ -85,4 +82,5 @@
 
   {% block javascript %}{% endblock %}
 </body>
+
 </html>
