@@ -73,10 +73,6 @@ def initialize_extensions(app):
 
     from subapp.models import User
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
-
 
 def register_blueprints(app):
     from subapp.main.routes import main
