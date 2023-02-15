@@ -3,11 +3,6 @@ from flask_login import UserMixin
 from datetime import datetime
 from config import ROLES, PERMISSIONS
 
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 a_posted_requests = db.Table("posted_requests",
                              db.Column("user_id", db.Integer, db.ForeignKey(
                                  "user.id"), primary_key=True),
