@@ -10,5 +10,4 @@ class RequestForm(FlaskForm):
     """
     date_requested = DateField(
         'Date Requested', format='%Y-%m-%d', validators=[DataRequired()])
-    bonus = IntegerField("Bonus", default=0)
     submit = SubmitField('Submit')

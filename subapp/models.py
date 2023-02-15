@@ -75,7 +75,6 @@ class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     base_price = db.Column(db.Integer, nullable=False)
     accepted = db.Column(db.Boolean, default=False, nullable=False)
-    bonus = db.Column(db.Integer, nullable=False, default=0)
     subsidy = db.Column(db.Integer, default=0)
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
@@ -108,7 +107,7 @@ class Request(db.Model):
             return False
 
     def get_price(self):
-        return self.base_price + self.bonus
+        return self.base_price
 
     def get_course(self):
         return self.shift[0].course

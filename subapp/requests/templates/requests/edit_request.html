@@ -57,86 +57,66 @@
           <!-- Request form -->
           <div class="card border-dark mb-3">
             <h4 class="card-header px-3 py-3">Edit Request</h3>
-            <div class="class-block pt-3">
-              <fieldset class="form-group px-3 py-1 md-2">
-                <form id="request_form" method="POST" action="" enctype=multipart/form-data>
-                  {{ form.hidden_tag() }}
+              <div class="class-block pt-3">
+                <fieldset class="form-group px-3 py-1 md-2">
+                  <form id="request_form" method="POST" action="" enctype=multipart/form-data>
+                    {{ form.hidden_tag() }}
 
-                  <!-- Date requested -->
-                  <div class="form-group row">
-                    <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span style="color:#ff0000">*</span></strong></label>
-                    <div class="col-sm-3">
-                      {% if form.date_requested.errors %}
+                    <!-- Date requested -->
+                    <div class="form-group row">
+                      <label for="date_requested" class="col-sm-2 col-form-label"><strong>Date<span
+                            style="color:#ff0000">*</span></strong></label>
+                      <div class="col-sm-3">
+                        {% if form.date_requested.errors %}
                         {{ form.date_requested(class="form-control is-invalid", id="date_requested", type="date") }}
                         <div class="invalid-feedback">
-                            {% for error in form.date_requested.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                          {% for error in form.date_requested.errors %}
+                          <span>{{ error }}</span>
+                          {% endfor %}
                         </div>
-                      {% else %}
+                        {% else %}
                         {{ form.date_requested(class="form-control", id="date_requested", type="date") }}
-                      {% endif %}
-                      <div class="error-message pt-1" id = "date_error"></div>
+                        {% endif %}
+                        <div class="error-message pt-1" id="date_error"></div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="form-group row">
-                    <div class="col-sm-2"><strong>Base Price</strong></div>
-                    <div class="col-md-10" id="base_price">{{base}}</div>
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="bonus" class="col-sm-2 col-form-label"><strong>Bonus</strong></label>
-                    <div class="col-sm-3">
-                      {% if form.bonus.errors %}
-                        {{ form.bonus(class="form-control is-invalid", id="bonus") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.date_requested.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                      {% else %}
-                        {{ form.bonus(class="form-control", id="bonus") }}
-                      {% endif %}
-                      <div class="error-message pt-1" id = "bonus_error"></div>
+                    <div class="form-group row">
+                      <div class="col-sm-2"><strong>Base Price</strong></div>
+                      <div class="col-md-10" id="base_price">{{base}}</div>
                     </div>
-                  </div>
 
-                  <div class="form-group row">
-                    <div class="col-sm-5">
-                      <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
-                      {{ form.submit(class="btn btn-primary", id="submit") }}
-                      {% if form.submit.errors %}
+                    <div class="form-group row">
+                      <div class="col-sm-5">
+                        <a class="btn btn-secondary" href="{{url_for('main.profile')}}">Cancel</a>
+                        {{ form.submit(class="btn btn-primary", id="submit") }}
+                        {% if form.submit.errors %}
                         <ul class=errors>
                           {% for error in form.submit.errors %}
-                            <li>{{error}}</li>
+                          <li>{{error}}</li>
                           {% endfor %}
                         </ul>
-                      {% endif %}
+                        {% endif %}
+                      </div>
+                      <div class="error-message" id="form_error"></div>
                     </div>
-                    <div class="error-message" id = "form_error"></div>
-                  </div>
-              </fieldset>
-            </form>
+                </fieldset>
+                </form>
 
-          </div>
-        </div>
-      </div>
-    </section>
-              </form>
-
-            </div>
+              </div>
           </div>
         </div>
       </section>
+      </form>
+
     </div>
-
   </div>
+</div>
 
-  <!-- left padding -->
-  <div class="col-md-1"></div>
+<!-- left padding -->
+<div class="col-md-1"></div>
 </div>
-</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{url_for('requests.static', filename='js/script.js')}}"></script>
 <script type="text/javascript"

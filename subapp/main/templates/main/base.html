@@ -5,11 +5,11 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  
+
   <!-- Favicon-->
   <link rel="icon" type="image/x-icon" href="{{url_for('main.static', filename='favicon.ico')}}" />
   <!-- Bootstrap icons-->
@@ -22,6 +22,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <!-- font awesome icons-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Moment for dates -->
+  <script type="text/JavaScript" src="https://MomentJS.com/downloads/moment.js"></script>
   <title>Sub/Swap</title>
 </head>
 
@@ -38,7 +40,7 @@
       <!-- leftside of nav -->
       {% if current_user.is_authenticated %}
       <ul class="navbar-nav me-auto nav-pills">
-        
+
       </ul>
       {% endif %}
 
@@ -48,7 +50,7 @@
         <li id="credits" class="nav-item my-2">
           <a class="btn my-2 my-sm-0" aria-pressed="true">
             Credits <span class="badge badge-dark">{{session['credits']}}</span>
-          </a>       
+          </a>
         </li>
         <li id="found" class="nav-item">
           <a class="nav-link" href="{{url_for('main.dashboard')}}">Dashboard</a>
@@ -62,7 +64,7 @@
         </li>
         {% endif %}
       </ul>
-      
+
         <form
           class="form-inline my-2 my-lg-0"
           action="{{url_for('users.logout')}}"

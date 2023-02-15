@@ -102,7 +102,7 @@ def create_requests():
         requests.append(Request(date_requested=random.choice(finalDates),
                                 base_price=0,
                                 accepted=random.choice([True]*5 + [False]*15),
-                                bonus=random.randint(5, 50)))
+                                ))
 
     for request in requests:
         db.session.add(request)

@@ -31,8 +31,8 @@ def create_request(shiftid):
         new_request = Request(
             date_requested=form.date_requested.data,
             base_price=calc_base_price(
-                shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price'],
-            bonus=form.bonus.data)
+                shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price']
+            )
 
         new_request.shift.append(shift)
         new_request.posted_by.append(current_user)
@@ -74,7 +74,6 @@ def edit_request(requestid):
         if old_date != form.date_requested.data:
             rqst.base_price = calc_base_price(
                 shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price']
-        rqst.bonus = form.bonus.data
 
         db.session.add(rqst)
         current_user.balance += old_price - rqst.get_price()
@@ -86,7 +85,6 @@ def edit_request(requestid):
         print(form.errors)
 
     form.date_requested.data = rqst.date_requested.date()
-    form.bonus.data = rqst.bonus
 
     return render_template('requests/edit_request.html', form=form, shiftid=shift.id, shifts=current_user.schedule, base=rqst.base_price, day=shift.day)
 
@@ -140,7 +138,7 @@ def swap_request(requestid):
     price = price['price']
     print(f"Price of new shift is {price}. Old is {rqst.get_price()}")
     new_swap_request = Request(
-        date_requested=date, base_price=price, bonus=0, subsidy=price-rqst.base_price
+        date_requested=date, base_price=price, subsidy=price-rqst.base_price
     )
     new_swap_request.shift.append(swap_shift)
     new_swap_request.posted_by.append(current_user)
