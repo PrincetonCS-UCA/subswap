@@ -3,7 +3,7 @@ from subapp.models import User, Role
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
 from subapp import cas_client
-from config import ADMINS
+from config import ADMINS, ICO
 
 users = Blueprint('users', __name__, template_folder='templates')
 
@@ -42,8 +42,9 @@ def login():
 
             # testing pur
             if user in ADMINS:
-                new_user.role = Role.query.filter(name='ADMIN').first()
+                new_user.role = Role.query.filter(name='Admin').first()
 
+            new_user.balance = ICO
             db.session.add(new_user)
             db.session.commit()
 

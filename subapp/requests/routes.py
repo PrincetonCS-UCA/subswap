@@ -127,16 +127,12 @@ def swap_request(requestid):
     rqst.accepted = True
     rqst.accepted_by.append(current_user)
     rqst.date_accepted = datetime.today()
-    print("Swap request accepted.")
 
     # create new request for the swap shift
     shift_data = request.args.get("swap_shift_data")
-    print(f"Processing {shift_data}")
     idx, date = process_shift_str(shift_data)
     swap_shift = Shift.query.filter_by(id=idx).first()
-    price = calc_base_price(idx, date)
-    price = price['price']
-    print(f"Price of new shift is {price}. Old is {rqst.get_price()}")
+    price = calc_base_price(idx, date)['price']
     new_swap_request = Request(
         date_requested=date, base_price=price, subsidy=price-rqst.base_price
     )
@@ -165,7 +161,7 @@ def delete_request(requestid):
     return redirect(url_for('main.dashboard'))
 
 
-@requests.route("/swap_shifts/<requestid>")
+@requests.route("/swap_shifts/<requestid>", methods=['POST', 'GET'])
 @login_required
 def swap_shifts(requestid):
     rqst = Request.query.filter_by(id=requestid).first()
@@ -182,13 +178,7 @@ def calculate_base_price():
     if PRICING_ALG == "default":
         res = calc_base_price(int(shiftid), date)
     else:
-        res = requests.get(PRICING_ALG)
+        # generate request for pricing alg
+        pass
 
-    return jsonify(res)
-
-@requests.route("/check_balance")
-@login_required
-def check_balance():
-
-    res = {'balance' : current_user.balance}
     return jsonify(res)
