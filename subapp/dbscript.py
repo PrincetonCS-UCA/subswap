@@ -4,7 +4,7 @@ from subapp.models import User, Shift, Request, Role
 from subapp.requests.util import calc_base_price
 from datetime import time, timedelta, datetime, date
 import random
-from config import COURSES
+from config import COURSES, ICO
 # --------------------------------------------------------------------
 
 
@@ -54,14 +54,14 @@ def create_users():
     cos126 = Role.query.filter_by(name='COS126').first()
     cos2xx = Role.query.filter_by(name='COS2xx').first()
     admin = Role.query.filter_by(name='Admin').first()
-    users.append(User(netid='mmir', balance=1000, role=admin))
-    users.append(User(netid='lumbroso', balance=1000, role=admin))
-    users.append(User(netid='ramadan', balance=1000, role=cos2xx))
-    users.append(User(netid='atli', balance=1000, role=cos126))
-    users.append(User(netid='de12', balance=1000, role=cos2xx))
-    users.append(User(netid='josephlou', balance=1000, role=cos2xx))
-    users.append(User(netid='lanceg', balance=1000, role=cos126))
-    users.append(User(netid='ffakhro', balance=1000, role=cos2xx))
+    users.append(User(netid='mmir', balance=ICO, role=admin))
+    users.append(User(netid='lumbroso', balance=ICO, role=admin))
+    users.append(User(netid='ramadan', balance=ICO, role=cos2xx))
+    users.append(User(netid='atli', balance=ICO, role=cos126))
+    users.append(User(netid='de12', balance=ICO, role=cos2xx))
+    users.append(User(netid='josephlou', balance=ICO, role=cos2xx))
+    users.append(User(netid='lanceg', balance=ICO, role=cos126))
+    users.append(User(netid='ffakhro', balance=ICO, role=cos2xx))
 
     for i, user in enumerate(users):
         db.session.add(user)

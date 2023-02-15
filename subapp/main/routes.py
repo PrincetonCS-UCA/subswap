@@ -69,8 +69,11 @@ def profile():
         "Saturday": 5,
         "Sunday": 6
     }
-    html = render_template('main/profile.html', shifts=current_user.schedule.sort(key=lambda x: day_order[x.day]),
-                           requests=current_user.accepted_requests.sort(key=lambda x: x.date_posted), history=current_user.inactive_requests().sort(key=lambda x: x.date_posted))
+    schedule = sorted(current_user.schedule, key=lambda x: day_order[x.day])
+    reqs = sorted(current_user.accepted_requests, key=lambda x: x.date_posted)
+    his = sorted(current_user.inactive_requests(), key=lambda x: x.date_posted)
+
+    html = render_template('main/profile.html', shifts=schedule, requests=reqs, history=his)
     return make_response(html)
 
 

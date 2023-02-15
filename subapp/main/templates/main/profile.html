@@ -35,6 +35,7 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% if shifts|length > 0 %}
                       {% for shift in shifts %}
                       <tr>
                         <td>{{shift.course}}</td>
@@ -46,6 +47,9 @@
                         </td>
                       </tr>
                       {% endfor %}
+                      {% else %}
+                      <tr>You have no assigned shifts.</tr>
+                      {% endif %}
                     </tbody>
 
                   </table>
