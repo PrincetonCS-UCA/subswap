@@ -1,7 +1,6 @@
-from subapp.models import Shift
-from datetime import time, timedelta, datetime, date
-from flask import jsonify
+from datetime import timedelta, datetime, date
 from flask_login import current_user
+from config import PRICING_SCHEME
 import math
 
 # def validate_request(request, swap):
@@ -16,13 +15,12 @@ import math
 
 
 def calc_base_price(shiftid, startdate, ignore=False):
-    request_date = startdate
-    if (type(startdate) == str):
-        request_date = datetime.strptime(
-            startdate, '%Y-%m-%d')
-    num_days = request_date - \
-        datetime.combine(date.today(), datetime.min.time())
-    price = int(50/math.log(num_days.days, 2)) if num_days.days > 1 else 60
+    request_date = datetime.strptime(
+        startdate, '%Y-%m-%d') if isinstance(startdate, str) else startdate
+    num_days = (request_date - datetime.combine(date.today(),
+                datetime.min.time())).days
+    price = 30 if num_days >= 6 else PRICING_SCHEME[num_days]
+
     if ignore:
         return price
 
@@ -38,10 +36,10 @@ def get_swap_options(request_date, course):
     """
     # request_date = datetime.strptime(
     #     startdate, '%Y-%m-%d')
-    num_days = request_date - \
-        datetime.combine(date.today(), datetime.min.time())
-    dates = [request_date - timedelta(days=x) for x in range(1, num_days.days)]
-    dates += [request_date + timedelta(days=x) for x in range(10)]
+    num_days = (request_date - datetime.combine(date.today(),
+                datetime.min.time())).days
+    dates = [request_date - timedelta(days=x) for x in range(1, num_days)] + [
+        request_date + timedelta(days=x) for x in range(10)]
     dates.sort()
 
     # we have a list of dates
@@ -51,10 +49,7 @@ def get_swap_options(request_date, course):
         if len(day_shifts) > 10:
             break
         if shift.course == course:
-            if shift.day not in day_shifts:
-                day_shifts[shift.day] = [shift]
-            else:
-                day_shifts[shift.day].append(shift)
+            day_shifts.setdefault(shift.day, []).append(shift)
 
     swap_shift_list = []
 

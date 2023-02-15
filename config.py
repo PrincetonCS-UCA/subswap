@@ -3,7 +3,6 @@ import os
 # Determine the folder of the top-level directory of this project
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-
 class Config:
     FLASK_ENV = 'development'
     DEBUG = False
@@ -49,7 +48,8 @@ config = {
 }
 
 PRICING_ALG = "default"
+PRICING_SCHEME = [100, 70, 50, 40, 35, 32]
 COURSES = ["COS126", "COS2xx"]
 PERMISSIONS = {"COS126": 1, "COS2xx": 2, "ADMIN": 4}
-ROLES = {"COS126": [1], "COS2xx": [1, 2], "ADMIN": [1, 2, 4]}
+ROLES = {"COS126": [1], "COS126-sub": [1], "COS2xx": [1, 2], "COS2xx-sub": [1, 2], "Admin": [1, 2, 4]}
 ADMINS = ["mmir", "lumbroso"]

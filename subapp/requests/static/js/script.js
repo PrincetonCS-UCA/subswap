@@ -33,6 +33,7 @@ request_date.onchange = function () {
         getBasePrice(date).then(response => {
             if (response.status == "True") {
                 base_price.innerHTML = response.price
+                submit_button.disabled = false;
             } else {
                 base_price.innerHTML = "You do not have sufficient credits to create this request. Please select another day or contact the Lab Manager."
             }
