@@ -19,6 +19,7 @@ def create_shift(shift, course):
     }
 
     x = shift.split()
+    print(x)
     time_obj = x[1].split("-")
     day = days[x[0]]
     start_time = time(int(time_obj[0])+12)
@@ -80,6 +81,7 @@ def update_schedule():
     db.drop_all()
     db.create_all()
     Role.insert_roles()
+    db.session.commit()
 
     # asign shifts to users
     assign_shifts(cos2xx, 'COS2xx')
