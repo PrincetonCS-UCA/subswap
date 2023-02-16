@@ -11,21 +11,25 @@ function modalButtonClick() {
     var base_url = window.location.origin;
     // Get date of shift
     let requestid = $(this).data('requestid')
-    console.log("Here:" + requestid)
     requestid = encodeURIComponent(requestid)
     var swap_options = document.getElementById("swap_modal_body_" + requestid);
-    console.log(swap_options);
     // show list of possible shifts
     fetch(base_url + '/swap_shifts/' + requestid).then(function (response) {
         response.json().then(function (data) {
             var optionHTML = '';
-            for (let i = 0; i < data.swap_shifts.length; i++) {
-                optionHTML += '<div class="form-check">';
-                optionHTML += '<label>';
-                optionHTML += '<input class="form-check-input" name="swap_shift_option" type="checkbox" value="' + data.swap_shifts[i][0] + ', ' + data.swap_shifts[i][1] + '">';
-                optionHTML += data.swap_shifts[i][1] + '</label>'
-                optionHTML += '</div>'
+            if (data.swap_shifts.length > 0) {
+                for (let i = 0; i < data.swap_shifts.length; i++) {
+                    optionHTML += '<div class="form-check">';
+                    optionHTML += '<label>';
+                    optionHTML += '<input class="form-check-input" name="swap_shift_option" type="checkbox" value="' + data.swap_shifts[i][0] + ', ' + data.swap_shifts[i][1] + '">';
+                    optionHTML += data.swap_shifts[i][1] + '</label>'
+                    optionHTML += '</div>'
+                }
+            } else {
+                optionHTML = '<p>There are no compatible shifts for swapping with this one in your schedule. Please try a different shift or consider subbing.</p>'
+                document.getElementById('modal_submit_' + requestid).style.display = "none";
             }
+
             swap_options.innerHTML = optionHTML;
         })
     });
