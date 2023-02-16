@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask.logging import default_handler
+from flask_talisman import Talisman
 from click import echo
 from config import config
 from cas import CASClient
@@ -20,6 +21,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 bootstrap = Bootstrap()
 cas_client = CASClient(version=3)
+talisman = Talisman()
 
 # ==============================================================================
 # Application Factory Function
@@ -70,6 +72,8 @@ def initialize_extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
     bootstrap.init_app(app)
+    talisman.init_app(app, content_security_policy=None)
+
 
     from subapp.models import User
 
