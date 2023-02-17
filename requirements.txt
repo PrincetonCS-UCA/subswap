@@ -12,7 +12,7 @@ SQLAlchemy==1.4.25
 WTForms==2.3.3
 Flask-Migrate==3.1.0
 Pillow>=9.2.0
-Werkzeug~=2.0.0
+Werkzeug>=2.2.3
 pandas==1.5.2
 psycopg2-binary==2.9.5
 flask-talisman==1.0.0
