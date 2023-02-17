@@ -58,7 +58,7 @@ def create_users():
     users.append(User(netid='lumbroso', balance=ICO, role=admin))
     users.append(User(netid='ramadan', balance=ICO, role=cos2xx))
     users.append(User(netid='atli', balance=ICO, role=cos126))
-    users.append(User(netid='de12', balance=ICO, role=cos2xx))
+    users.append(User(netid='bychan', balance=ICO, role=cos2xx))
     users.append(User(netid='josephlou', balance=ICO, role=cos2xx))
     users.append(User(netid='lanceg', balance=ICO, role=cos126))
     users.append(User(netid='ffakhro', balance=ICO, role=cos2xx))
