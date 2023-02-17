@@ -2,6 +2,7 @@ import os
 from flask import current_app
 import pandas as pd
 from datetime import time
+from threading import Thread
 from subapp.models import User, Shift, Role
 from subapp import db
 from config import ICO, ADMINS
@@ -49,23 +50,28 @@ def create_users(staff, course):
 
 
 def assign_shifts(df, course):
-    i = 0
-    for key, value in df.iteritems():
+    from subapp import create_app
 
-        # value is list of users
-        value = list(value)
-        value = [x for x in value if pd.notnull(x)]
+    app = create_app()
+    with app.app_context():
+        i = 0
+        for key, value in df.iteritems():
 
-        # all columns execpt subs. create shift, assign users to that shift
-        if i < len(df.columns) - 1:
-            i += 1
-            shift = create_shift(key, course)
-            users = create_users(value, course)
-            shift.staff.extend(users)
-            db.session.commit()
-        else:
-            # subs
-            _ = create_users(value, course + '-sub')
+            # value is list of users
+            value = list(value)
+            value = [x for x in value if pd.notnull(x)]
+
+            # all columns execpt subs. create shift, assign users to that shift
+            if i < len(df.columns) - 1:
+                i += 1
+                shift = create_shift(key, course)
+                users = create_users(value, course)
+                shift.staff.extend(users)
+                db.session.commit()
+            else:
+                # subs
+                _ = create_users(value, course + '-sub')
+        print(f"Added {course}")
 
 
 def update_schedule():
@@ -83,7 +89,8 @@ def update_schedule():
     db.session.commit()
 
     # asign shifts to users
-    assign_shifts(cos2xx, 'COS2xx')
-    assign_shifts(cos126, 'COS126')
-
-    return True
+    thr1 = Thread(target=assign_shifts, args=[cos2xx, 'COS2xx'])
+    thr2 = Thread(target=assign_shifts, args=[cos126, 'COS126'])
+    thr1.start()
+    thr2.start()
+    return (thr1, thr2)

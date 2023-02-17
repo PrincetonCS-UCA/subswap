@@ -42,6 +42,8 @@ def login():
 
             # testing pur
             if user in ADMINS:
+                if len(Role.query.all()) == 0:
+                    Role.insert_roles()
                 new_user.role = Role.query.filter_by(name='Admin').first()
 
             db.session.add(new_user)
