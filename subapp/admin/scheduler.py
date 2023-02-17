@@ -19,7 +19,6 @@ def create_shift(shift, course):
     }
 
     x = shift.split()
-    print(x)
     time_obj = x[1].split("-")
     day = days[x[0]]
     start_time = time(int(time_obj[0])+12)
@@ -36,9 +35,9 @@ def create_users(staff, course):
     for person in staff:
         user = User.query.filter_by(netid=person).first()
         r = Role.query.filter_by(
-            name='Admin') if user.netid in ADMINS else Role.query.filter_by(name=course)
+            name='Admin').first() if person in ADMINS else Role.query.filter_by(name=course).first()
         if user is None:
-            new_user = User(netid=person, balance=ICO, role=course)
+            new_user = User(netid=person, balance=ICO, role=r)
             db.session.add(new_user)
             db.session.commit()
             res.append(new_user)

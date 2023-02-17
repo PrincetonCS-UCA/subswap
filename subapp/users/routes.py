@@ -44,7 +44,6 @@ def login():
             if user in ADMINS:
                 new_user.role = Role.query.filter_by(name='Admin').first()
 
-            new_user.balance = ICO
             db.session.add(new_user)
             db.session.commit()
 

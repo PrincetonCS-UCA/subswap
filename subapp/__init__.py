@@ -86,6 +86,20 @@ def register_cli_commands(app):
         dbscript.create_dummy_data(all=True)
         echo("Initialized the database!")
 
+    @app.cli.command('recreate_db')
+    def recreate_db():
+        from subapp import db
+        db.drop_all()
+        db.create_all()
+
+    @app.cli.command('db_stats')
+    def db_statistics():
+        from subapp.models import User, Request, Shift
+        print(f"{len(User.query.all())} users.")
+        print(f"{len(Request.query.all())} requests.")
+        print(f"{len(Shift.query.all())} shifts.")
+
+
 
 def configure_logging(app):
     if app.config['LOG_WITH_GUNICORN'] == "True":
