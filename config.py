@@ -7,8 +7,6 @@ class Config:
     FLASK_ENV = 'development'
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY', default='wubalubadubub')
-    # if database url is not given, an sqllite datebase is stored in the
-    # instance folder
     CAS_SERVER_URL = os.environ.get(
         'CAS_SERVER_URL', default='https://fed.princeton.edu/cas/login')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -22,13 +20,15 @@ class ProductionConfig(Config):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace(
             "postgres://", "postgresql://", 1)
     else:
-        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASEDIR, 'instance', 'data-dev.db')}"
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASEDIR, 'instance', 'data-prod.db')}"
 
 
 class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
     CAS_SERVICE_URL = 'http://localhost:5000/login?next=%2F'
+    # if database url is not given, an sqllite datebase is stored in the
+    # instance folder
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         f"sqlite:///{os.path.join(BASEDIR, 'instance', 'data-dev.db')}"
 

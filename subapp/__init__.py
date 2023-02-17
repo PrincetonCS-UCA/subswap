@@ -2,7 +2,6 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-import sqlalchemy as sa
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -41,20 +40,6 @@ def create_app():
     configure_logging(app)
     register_cli_commands(app)
     configure_cas(app)
-    # print(cas_client.server_url)
-    # print(cas_client.service_url)
-
-    # check if the database needs to be initialized
-    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    inspector = sa.inspect(engine)
-    if not inspector.has_table("user") or os.environ.get('WIPE_DB') == 'True':
-        with app.app_context():
-            from subapp import dbscript
-            dbscript.create_dummy_data(all=True)
-
-            app.logger.info('Initialized the database!')
-    else:
-        app.logger.info('Database already contains the user table.')
 
     return app
 
