@@ -24,7 +24,9 @@
             </div>
             <div class="card-body">
               <div class="tab-content mt-3">
+
                 <div class="tab-pane active" id="description" role="tabpanel">
+                  {% if shifts|length > 0 %}
                   <table class="table">
                     <thead class="thead-dark">
                       <tr>
@@ -35,7 +37,6 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% if shifts|length > 0 %}
                       {% for shift in shifts %}
                       <tr>
                         <td>{{shift.course}}</td>
@@ -47,18 +48,16 @@
                         </td>
                       </tr>
                       {% endfor %}
-                      {% else %}
-                      <tr>You have no assigned shifts.</tr>
-                      {% endif %}
                     </tbody>
-
                   </table>
-
+                  {% else %}
+                  <p>You have not been assigned any permanent shifts!</p>
+                  {% endif %}
                 </div>
 
                 <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
+                  {% if requests|length > 0 %}
                   <table class="table">
-                    <h3>Accepted requests</h3>
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">netid</th>
@@ -81,12 +80,15 @@
                       {% endfor %}
                     </tbody>
                   </table>
+                  {% else %}
+                    <p>You have not accepted any requests yet!</p>
+                  {% endif %}
 
                 </div>
 
                 <div class="tab-pane" id="deals" role="tabpanel" aria-labelledby="deals-tab">
+                  {% if history|length > 0 %}
                   <table class="table">
-                    <h3>History</h3>
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">netid</th>
@@ -111,6 +113,9 @@
                       {% endfor %}
                     </tbody>
                   </table>
+                  {% else %}
+                  <p>You have not posted any requests yet!</p>
+                  {% endif %}
                 </div>
               </div>
             </div>

@@ -44,18 +44,22 @@ class User(db.Model, UserMixin):
         return f"User('{self.netid}')"
 
     def active_requests(self):
-        return [request for request in self.posted_requests if not request.accepted]
+        """
+        Request has not been accepted AND it is in the future.
+        """
+        return [request for request in self.posted_requests if not request.accepted and request.date_time()[0] > datetime.now()]
 
     def inactive_requests(self):
-        return [request for request in self.posted_requests if request.accepted]
+        """
+        Request has been accepted OR it is in the past.
+        """
+        return [request for request in self.posted_requests if request.accepted or request.date_time()[1] < datetime.now()]
 
-    # shifts for which the user has submitted a request
     def requested_shifts(self):
+        """
+        Shifts for which the user has an active request.
+        """
         return [request.shift for request in self.active_requests()]
-
-    # shifts for which the user's request was accepted. idk why this is useful
-    def fulfilled_shifts(self):
-        return [request.shift for request in self.inactive_requests()]
 
     def is_request_duplicate(self, request):
         for req in self.active_requests():
@@ -65,6 +69,9 @@ class User(db.Model, UserMixin):
         return False
 
     def can(self, perm):
+        """
+        Checks if the user has the given permission.
+        """
         return self.role is not None and self.role.has_permission(perm)
 
     def is_admin(self):
@@ -111,6 +118,11 @@ class Request(db.Model):
 
     def get_course(self):
         return self.shift[0].course
+
+    def date_time(self):
+        start = datetime.combine(self.date_requested, self.shift[0].start)
+        end = datetime.combine(self.date_requested, self.shift[0].end)
+        return [start, end]
 
 
 class Shift(db.Model):
