@@ -1,5 +1,6 @@
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, current_app
 from flask_login import login_required
+import os
 from subapp.admin.forms import AddScheduleForm
 from subapp.admin.util import admin_required, save_files
 from subapp.admin.scheduler import update_schedule
@@ -17,11 +18,16 @@ admin = Blueprint('admin', __name__,
 def add_schedule():
     form = AddScheduleForm()
     if form.validate_on_submit():
-        cos226 = form.cos226.data
-        cos126 = form.cos126.data
-        save_files(cos226, cos126)
-        update_schedule()
-        print("Schedule updated")
+        files = {k: v for k, v in form.data.items() if k.startswith('cos') and v}
+        clear_db = form.clear_db.data
+        if files:
+            save_files(files)
+            paths = {name: os.path.join(
+                current_app.root_path, f'admin/static/files/{name}.csv') for name in files.keys()}
+            update_schedule(paths, clear_db)
+            print("Schedule updated")
+        else:
+            print('No files found.')
         return redirect(url_for('main.dashboard'))
 
     return render_template('admin/add_schedule.html', form=form)

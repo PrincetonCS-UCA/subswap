@@ -22,11 +22,8 @@ def admin_required(f):
     return permission_required(PERMISSIONS['Admin'])(f)
 
 
-def save_files(cos226, cos126):
-    cos226_path = os.path.join(
-        current_app.root_path, 'admin/static/files/cos226.csv')
-    cos126_path = os.path.join(
-        current_app.root_path, 'admin/static/files/cos126.csv')
-    cos226.save(cos226_path)
-    cos126.save(cos126_path)
+def save_files(files):
+    for name, file in files.items():
+        path = os.path.join(current_app.root_path, f'admin/static/files/{name}.csv')
+        file.save(path)
     return True

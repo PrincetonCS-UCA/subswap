@@ -1,37 +1,39 @@
 {% extends "main/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-<div class="d-flex justify-content-center align-items-center container">
-    <div class="card text-center pt-5">
-        <div class="card-header">
+<div class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="card">
+        <div class="card-header text-center">
             <h3>Upload Schedule</h3>
         </div>
         <div class="card-body">
             <form method="POST" action="" enctype=multipart/form-data>
                 {{ form.hidden_tag() }}
-
-                <div class="row pt-4">
-                    <legend class="col-form-label col-sm-4">COS2xx File<span
-                        style="color:#ff0000">*</span></strong></legend>
+                <div class="row">
+                    <legend class="col-form-label col-sm-8">Upload at least one file:</legend>
+                </div>
+                <div class="row pt-2">
+                    <legend class="col-form-label col-sm-4">COS2xx File</legend>
                     <div class="col-sm-8">
-                        {{form.cos226(class="form-control", id="cos226")}}
+                        {{form.cos2xx(class="form-control", id="cos2xx")}}
                     </div>
                 </div>
                 <div class="row pt-4">
-                    <legend class="col-form-label col-sm-4">COS126 File<span
-                        style="color:#ff0000">*</span></strong></legend>
+                    <legend class="col-form-label col-sm-4">COS126 File</legend>
                     <div class="col-sm-8">
-                        {{form.cos126(class="form-control", id="cos226")}}
+                        {{form.cos126(class="form-control", id="cos126")}}
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <legend class="col-form-label col-sm-4">Clear existing data</legend>
+                    <div class="col-sm-8">
+                        {{ form.clear_db(class="form-contraol", id="clear_db") }}
                     </div>
                 </div>
 
                 <div class="col-lg-12 pt-4" style="text-align:center;">
-
                     <a class="btn btn-secondary" href="{{url_for('main.dashboard')}}">Cancel</a>
-
-
                     {{ form.submit(class="btn btn-primary") }}
-
                 </div>
             </form>
         </div>

@@ -55,7 +55,7 @@ def assign_shifts(df, course):
     app = create_app()
     with app.app_context():
         i = 0
-        for key, value in df.iteritems():
+        for key, value in df.items():
 
             # value is list of users
             value = list(value)
@@ -74,23 +74,15 @@ def assign_shifts(df, course):
         print(f"Added {course}")
 
 
-def update_schedule():
-    # get csv files
-    cos2xx_path = os.path.join(
-        current_app.root_path, 'admin/static/files/cos226.csv')
-    cos126_path = os.path.join(
-        current_app.root_path, 'admin/static/files/cos126.csv')
-    cos2xx = pd.read_csv(cos2xx_path)
-    cos126 = pd.read_csv(cos126_path)
+def update_schedule(files, clear_db):
+    if clear_db:
+        db.drop_all()
+        db.create_all()
+        Role.insert_roles()
+        db.session.commit()
 
-    db.drop_all()
-    db.create_all()
-    Role.insert_roles()
-    db.session.commit()
+    for name, path in files.items():
+        df = pd.read_csv(path)
+        assign_shifts(df, name)
 
-    # asign shifts to users
-    thr1 = Thread(target=assign_shifts, args=[cos2xx, 'COS2xx'])
-    thr2 = Thread(target=assign_shifts, args=[cos126, 'COS126'])
-    thr1.start()
-    thr2.start()
-    return (thr1, thr2)
+    return True
