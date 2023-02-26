@@ -84,7 +84,7 @@ def create_requests():
                 6: "Saturday",
                 7: "Sunday"}
 
-    start_date = date.today()
+    start_date = date.today() - timedelta(days=5)
     end_date = start_date + timedelta(days=30)
 
     while start_date != end_date:

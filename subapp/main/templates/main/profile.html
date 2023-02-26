@@ -108,7 +108,11 @@
                         <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
                         </td>
                         <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
-                        <td>Accepted by {{request.accepted_by[0].netid}}</td>
+                        {% if request.accepted %}
+                          <td>Accepted by {{request.accepted_by[0].netid}}</td>
+                        {% else %}
+                          <td>Expired</td>
+                        {% endif%}
                       </tr>
                       {% endfor %}
                     </tbody>
