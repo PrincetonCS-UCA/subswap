@@ -182,3 +182,20 @@ def calculate_base_price():
         pass
 
     return jsonify(res)
+
+
+@requests.route("/requests/is_duplicate")
+@login_required
+def is_duplicate():
+    shiftid = request.args.get('shiftid')
+    shift = Shift.query.filter_by(id=shiftid).first()
+    date = datetime.strptime(
+        request.args.get('date'), '%Y-%m-%d')
+    rqst = {
+        "posted_by": current_user,
+        "shift": shift,
+        "date_requested": date
+    }
+    res = {'duplicate': current_user.is_request_duplicate(rqst)}
+
+    return jsonify(res)

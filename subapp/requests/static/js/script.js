@@ -5,7 +5,7 @@ submit_button.disabled = true;
 
 let valid_date = false;
 
-request_date.onchange = function () {
+request_date.onchange = async function () {
     valid_date = false;
     submit_button.disabled = true;
     // get date entered by user
@@ -13,6 +13,8 @@ request_date.onchange = function () {
 
     // get day of shift from metadata
     let day = document.getElementById("day-data").dataset.day;
+
+    let is_duplicate = await isDuplicate(date);
 
     // check if date is in the future AND that it is on the day of the shift
     if (!moment(date).isAfter(moment())) {
@@ -25,6 +27,9 @@ request_date.onchange = function () {
         $("#form_error").html('');
         var base_price = document.getElementById("base_price");
         base_price.innerHTML = "Enter a valid date to calculate base price."
+    } else if (is_duplicate.duplicate) {
+        $("#date_error").html('This request already exists. Choose a different date.');
+        $("#form_error").html('');
     } else {
         $("#date_error").html('')
         valid_date = true;
@@ -55,5 +60,15 @@ async function getBasePrice(date) {
     shiftid = shiftid[shiftid.length - 2];
     var base_price = document.getElementById("base_price");
     const response = await fetch(base_url + '/calculate_base_price?shiftid=' + shiftid + '&date=' + date);
+    return await response.json();
+}
+
+async function isDuplicate(date) {
+
+    date = encodeURIComponent(date);
+
+    let shiftid = window.location.href.split('/');
+    shiftid = shiftid[shiftid.length - 2];
+    const response = await fetch(base_url + '/requests/is_duplicate?shiftid=' + shiftid + '&date=' + date);
     return await response.json();
 }

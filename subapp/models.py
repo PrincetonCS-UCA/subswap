@@ -62,8 +62,18 @@ class User(db.Model, UserMixin):
         return [request.shift for request in self.active_requests()]
 
     def is_request_duplicate(self, request):
+        """
+        @param request should be a dictionary with at least three fields:
+        1. posted_by: User object of the poster
+        2. shift: Shift object of the related shift
+        3. date_request: Of type datetime
+
+        It should NOT be a Request object.
+        """
         for req in self.active_requests():
-            if req.is_duplicate(request):
+            if ((request["posted_by"] == req.posted_by[0]) &
+                    (request["shift"] == req.shift[0]) &
+                    (request["date_requested"] == req.date_requested)):
                 return True
 
         return False
@@ -104,14 +114,6 @@ class Request(db.Model):
 
     def posted(self):
         return self.posted_by[0]
-
-    def is_duplicate(self, request):
-        if ((request.posted_by == self.posted_by) &
-                (request.shift == self.shift) &
-                (request.date_requested == self.date_requested)):
-            return True
-        else:
-            return False
 
     def get_price(self):
         return self.base_price

@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime, date
 from flask_login import current_user
 from config import PRICING_SCHEME
-import math
+from subapp.models import Request, Shift
 
 # def validate_request(request, swap):
 #     # can current user create this request?
@@ -58,8 +58,16 @@ def get_swap_options(request_date, course):
         # get shifts for that day
         if x.strftime('%A') in day_shifts:
             for shift in day_shifts[x.strftime('%A')]:
-                swap_shift_list.append(
-                    [shift.id, shift.formatted() + ", " + x.strftime("%m-%d-%Y")])
+                # exclude duplicates
+                rqst = {
+                    "posted_by": current_user,
+                    "shift": shift,
+                    "date_requested": x
+                }
+
+                if not current_user.is_request_duplicate(rqst):
+                    swap_shift_list.append(
+                        [shift.id, shift.formatted() + ", " + x.strftime("%m-%d-%Y")])
 
     return swap_shift_list
 
