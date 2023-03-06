@@ -10,22 +10,19 @@
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link active" href="#description" role="tab" aria-controls="description"
-                    aria-selected="true">Schedule</a>
+                  <a class="nav-link active" href="#schedule" role="tab" aria-controls="schedule"
+                    aria-selected="true">Permanent Schedule</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#history" role="tab" aria-controls="history" aria-selected="false">Accepted
-                    Requests</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#deals" role="tab" aria-controls="deals" aria-selected="false">History</a>
+                  <a class="nav-link" href="#history" role="tab" aria-controls="history"
+                    aria-selected="false">Posting History</a>
                 </li>
               </ul>
             </div>
             <div class="card-body">
               <div class="tab-content mt-3">
 
-                <div class="tab-pane active" id="description" role="tabpanel">
+                <div class="tab-pane active" id="schedule" role="tabpanel">
                   {% if shifts|length > 0 %}
                   <table class="table">
                     <thead class="thead-dark">
@@ -55,70 +52,117 @@
                   {% endif %}
                 </div>
 
+
                 <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
-                  {% if requests|length > 0 %}
-                  <table class="table">
-                    <thead class="thead-dark">
-                      <tr>
-                        <th scope="col">netid</th>
-                        <th scope="col">Course</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Shift</th>
-                        <th scope="col">Date Posted</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for request in requests%}
-                      <tr>
-                        <th scope="row">{{request.posted_by[0].netid}}</th>
-                        <td>{{request.shift[0].course}}</td>
-                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
-                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
-                        </td>
-                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                  {% else %}
-                    <p>You have not accepted any requests yet!</p>
-                  {% endif %}
-
-                </div>
-
-                <div class="tab-pane" id="deals" role="tabpanel" aria-labelledby="deals-tab">
                   {% if history|length > 0 %}
                   <table class="table">
                     <thead class="thead-dark">
                       <tr>
-                        <th scope="col">netid</th>
                         <th scope="col">Course</th>
                         <th scope="col">Date</th>
                         <th scope="col">Shift</th>
                         <th scope="col">Date Posted</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Credits Used</th>
                       </tr>
                     </thead>
                     <tbody>
                       {% for request in history%}
                       <tr>
-                        <th scope="row">{{request.posted_by[0].netid}}</th>
                         <td>{{request.shift[0].course}}</td>
                         <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
                         <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
                         </td>
                         <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
                         {% if request.accepted %}
-                          <td>Accepted by {{request.accepted_by[0].netid}}</td>
+                        <td>Accepted by {{request.accepted_by[0].netid}}</td>
                         {% else %}
-                          <td>Expired</td>
+                        <td>Expired</td>
                         {% endif%}
+                        <td>{{ request.base_price }}</td>
                       </tr>
                       {% endfor %}
                     </tbody>
                   </table>
                   {% else %}
                   <p>You have not posted any requests yet!</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="items_container container px-4 px-lg-5">
+          <div class="card">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#upcoming_reqs" role="tab" aria-controls="upcoming_reqs" aria-selected="true">Upcoming Accepted Requests</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#past_reqs" role="tab" aria-controls="past_reqs" aria-selected="false">Past Accepted Requests</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <div class="tab-content mt-3">
+                <div class="tab-pane active" id="upcoming_reqs" role="tabpanel" aria-labelledby="upcoming_reqs-tab">
+                  {% if upcoming_reqs|length > 0 %}
+                  <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">NetID</th>
+                        <th scope="col">Course</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Date Posted</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for request in upcoming_reqs%}
+                      <tr>
+                        <th scope="row">{{request.posted_by[0].netid}}</th>
+                        <td>{{request.shift[0].course}}</td>
+                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
+                        </td>
+                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                  <p>You do not have any upcoming requests to fulfill!</p>
+                  {% endif %}
+                </div>
+
+                <div class="tab-pane" id="past_reqs" role="tabpanel" aria-labelledby="past_reqs-tab">
+                  {% if past_reqs|length > 0 %}
+                  <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">netid</th>
+                        <th scope="col">Course</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Date Posted</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for request in past_reqs%}
+                      <tr>
+                        <th scope="row">{{request.posted_by[0].netid}}</th>
+                        <td>{{request.shift[0].course}}</td>
+                        <td>{{request.shift[0].day}}, {{request.date_requested.strftime('%m-%d-%Y')}}</td>
+                        <td> {{request.shift[0].start.strftime("%I:%M")}}-{{request.shift[0].end.strftime("%I:%M %p")}}
+                        </td>
+                        <td>{{ request.date_posted.strftime('%Y-%m-%d') }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                  <p>No requests to show!</p>
                   {% endif %}
                 </div>
               </div>

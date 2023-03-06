@@ -78,6 +78,16 @@ class User(db.Model, UserMixin):
 
         return False
 
+    def accepted_reqs(self):
+        """
+        Returns a list of requests accepted by the user that are in the future.
+        """
+        future = sorted([request for request in self.accepted_requests if request.date_requested >
+                        datetime.now()], key=lambda x: x.date_requested)
+        past = sorted([
+            request for request in self.accepted_requests if request.date_requested <= datetime.now()], key=lambda x: x.date_requested)
+        return (future, past)
+
     def can(self, perm):
         """
         Checks if the user has the given permission.
@@ -87,12 +97,11 @@ class User(db.Model, UserMixin):
     def is_admin(self):
         return self.can(PERMISSIONS['Admin'])
 
-
 class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     base_price = db.Column(db.Integer, nullable=False)
     accepted = db.Column(db.Boolean, default=False, nullable=False)
-    subsidy = db.Column(db.Integer, default=0)
+    subsidy = db.Column(db.Integer)
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     date_requested = db.Column(db.DateTime, nullable=False)

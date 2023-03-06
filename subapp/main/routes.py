@@ -47,7 +47,7 @@ def dashboard():
         Request.accepted == False).filter(Request.date_requested >= date.today()).order_by(Request.date_requested.asc()).all()
 
     requests = {}
-    
+
     for course in COURSES:
         if current_user.can(PERMISSIONS[course + '-accept']) or current_user.is_admin():
             requests[course] = [x for x in active_requests if x.get_course()
@@ -71,10 +71,11 @@ def profile():
         "Sunday": 6
     }
     schedule = sorted(current_user.schedule, key=lambda x: day_order[x.day])
-    reqs = sorted(current_user.accepted_requests, key=lambda x: x.date_posted)
+    upcoming_reqs, past_reqs = current_user.accepted_reqs()
     his = sorted(current_user.inactive_requests(), key=lambda x: x.date_posted)
 
-    html = render_template('main/profile.html', shifts=schedule, requests=reqs, history=his)
+    html = render_template('main/profile.html',
+                           shifts=schedule, upcoming_reqs=upcoming_reqs, past_reqs=past_reqs, history=his)
     return make_response(html)
 
 
