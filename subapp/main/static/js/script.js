@@ -63,3 +63,16 @@ function swap_request(requestid) {
         alert("Please choose a shift before submitting.")
     }
 }
+
+// confirm sub request
+function sub_request(requestid) {
+    let requestId = encodeURIComponent(requestid)
+    let url = '/request/' + requestId + '/sub'
+    let _ = $.ajax({
+        type: 'POST',
+        url: url,
+        success: function () {
+            location.reload();
+        }
+    })
+}
