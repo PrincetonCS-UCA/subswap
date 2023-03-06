@@ -1,7 +1,7 @@
 # Sub/Swap Marketplace
 A platform that allows workers to request subs for their shifts. It'a a marketplace that prices requests based on how inconvenient they are to fulfill. Currently only supports Princeton Computer Science Lab Teaching Assistants. Instructions on how to use the platform: https://subswap.herokuapp.com/about
 
-# Development Instructions
+# Running on your local environment
 1. Setup a python virtual environment:
     ```
     python3 -m venv env
