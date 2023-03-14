@@ -80,9 +80,12 @@ def update_schedule(files, clear_db):
         db.create_all()
         Role.insert_roles()
         db.session.commit()
+        print("Created roles.")
 
     for name, path in files.items():
+        print(files)
         df = pd.read_csv(path)
+        print("Read the files")
         assign_shifts(df, name)
 
     return True

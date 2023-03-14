@@ -18,7 +18,7 @@ admin = Blueprint('admin', __name__,
 def add_schedule():
     form = AddScheduleForm()
     if form.validate_on_submit():
-        files = {k: v for k, v in form.data.items() if k.startswith('cos') and v}
+        files = {k: v for k, v in form.data.items() if k.startswith('COS') and v}
         clear_db = form.clear_db.data
         if files:
             save_files(files)
@@ -28,6 +28,12 @@ def add_schedule():
             print("Schedule updated")
         else:
             print('No files found.')
+            paths = {'COS2xx': os.path.join(
+                current_app.root_path, f'admin/static/files/cos2xx.csv'),
+                'COS126': os.path.join(
+                current_app.root_path, f'admin/static/files/cos126.csv')}
+            update_schedule(paths, clear_db)
+            print("Schedule updated")
         return redirect(url_for('main.dashboard'))
 
     return render_template('admin/add_schedule.html', form=form)

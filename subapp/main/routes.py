@@ -43,8 +43,7 @@ def dashboard():
         session['credits'] = current_user.balance
 
     # query database for requests
-    active_requests = Request.query.filter(
-        Request.accepted == False).filter(Request.date_requested >= date.today()).order_by(Request.date_requested.asc()).all()
+    active_requests = Request.query.filter(Request.accepted == False).filter(Request.date_requested >= date.today()).order_by(Request.date_requested.asc()).all()
 
     requests = {}
 
