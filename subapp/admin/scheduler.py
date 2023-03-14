@@ -75,16 +75,16 @@ def assign_shifts(df, course):
 
 
 def update_schedule(files, clear_db):
-    if clear_db:
-        print("clearing db")
-        db.drop_all()
-        print("dropped db")
-        db.create_all()
-        print("created tables")
-        Role.insert_roles()
-        print("inserted roles")
-        db.session.commit()
-        print("Created roles.")
+    from subapp import create_app
+
+    app = create_app()
+    with app.app_context():
+        if clear_db:
+            db.drop_all()
+            db.create_all()
+            Role.insert_roles()
+            db.session.commit()
+            print("Cleared database and inserted roles.")
 
     for name, path in files.items():
         print(files)

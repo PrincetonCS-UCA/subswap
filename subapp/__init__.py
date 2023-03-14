@@ -91,6 +91,7 @@ def register_cli_commands(app):
         from subapp import db
         db.drop_all()
         db.create_all()
+        echo("Recreated the database")
 
     @app.cli.command('db_stats')
     def db_statistics():
