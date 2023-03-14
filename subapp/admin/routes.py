@@ -32,6 +32,8 @@ def add_schedule():
                 current_app.root_path, f'admin/static/files/cos2xx.csv'),
                 'COS126': os.path.join(
                 current_app.root_path, f'admin/static/files/cos126.csv')}
+            print("paths:")
+            print(paths)
             update_schedule(paths, clear_db)
             print("Schedule updated")
         return redirect(url_for('main.dashboard'))

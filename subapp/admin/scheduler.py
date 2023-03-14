@@ -76,9 +76,13 @@ def assign_shifts(df, course):
 
 def update_schedule(files, clear_db):
     if clear_db:
+        print("clearing db")
         db.drop_all()
+        print("dropped db")
         db.create_all()
+        print("created tables")
         Role.insert_roles()
+        print("inserted roles")
         db.session.commit()
         print("Created roles.")
 
