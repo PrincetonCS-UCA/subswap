@@ -11,7 +11,6 @@ class AddScheduleForm(FlaskForm):
     """
     COS2xx = FileField('COS2xx Schedule', validators=[FileAllowed(['csv'], 'CSV files only!')])
     COS126 = FileField('COS126 Schdeule', validators=[FileAllowed(['csv'], 'CSV files only!')])
-    clear_db = BooleanField('Clear DB', default=False, widget=CheckboxInput())
     submit = SubmitField('Submit')
 
     # def validate(self, extra_validators=None):

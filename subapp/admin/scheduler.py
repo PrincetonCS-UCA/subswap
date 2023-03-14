@@ -74,21 +74,9 @@ def assign_shifts(df, course):
         print(f"Added {course}")
 
 
-def update_schedule(files, clear_db):
-    from subapp import create_app
-
-    app = create_app()
-    with app.app_context():
-        if clear_db:
-            db.drop_all()
-            db.create_all()
-            Role.insert_roles()
-            print("Cleared database and inserted roles.")
-
+def update_schedule(files):
     for name, path in files.items():
-        print(files)
         df = pd.read_csv(path)
-        print("Read the files")
         assign_shifts(df, name)
 
     return True
