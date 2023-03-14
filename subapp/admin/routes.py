@@ -4,6 +4,8 @@ import os
 from subapp.admin.forms import AddScheduleForm
 from subapp.admin.util import admin_required, save_files
 from subapp.admin.scheduler import update_schedule
+from subapp.models import Role
+from subapp import db
 
 admin = Blueprint('admin', __name__,
                   template_folder='templates',
@@ -39,3 +41,17 @@ def add_schedule():
         return redirect(url_for('main.dashboard'))
 
     return render_template('admin/add_schedule.html', form=form)
+
+
+@admin.route("/clear_db", methods=['GET', 'POST'])
+@login_required
+@admin_required
+def clear_db():
+    print("Starting clear.")
+    db.drop_all()
+    print("Dropped tables.")
+    db.create_all()
+    print("Created new ones.")
+    Role.insert_roles()
+    print("inserted roles")
+    return redirect(url_for('main.dashboard'))

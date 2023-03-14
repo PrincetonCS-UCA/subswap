@@ -83,7 +83,6 @@ def update_schedule(files, clear_db):
             db.drop_all()
             db.create_all()
             Role.insert_roles()
-            db.session.commit()
             print("Cleared database and inserted roles.")
 
     for name, path in files.items():
