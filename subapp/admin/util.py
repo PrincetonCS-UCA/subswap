@@ -5,8 +5,6 @@ from config import PERMISSIONS
 import os
 
 # wrapper function for admin
-
-
 def permission_required(permission):
     def decorator(f):
         @wraps(f)

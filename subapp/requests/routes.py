@@ -23,6 +23,7 @@ requests = Blueprint('requests', __name__,
 def create_request(shiftid):
     # shift requested
     shift = Shift.query.filter_by(id=shiftid).first()
+    print(f"shift: {shift.id}, {shift.course}, {shift.start}")
     form = RequestForm()
 
     # shifts in curr user schedule
@@ -34,8 +35,14 @@ def create_request(shiftid):
                 shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price']
             )
 
+        print(
+            f"request: {new_request.id}, {new_request.date_requested}, {new_request.posted_by}, {new_request.shift}")
         new_request.shift.append(shift)
         new_request.posted_by.append(current_user)
+
+        print(
+            f"request: {new_request.id}, {new_request.date_requested}, {new_request.posted_by}, {new_request.shift}")
+        print(f"user: {current_user.id}, {current_user.posted_requests}")
 
         db.session.add(new_request)
         current_user.balance -= new_request.get_price()

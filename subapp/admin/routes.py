@@ -28,13 +28,7 @@ def add_schedule():
             update_schedule(paths)
             print("Schedule updated")
         else:
-            print('Updating schedule using uploaded files.')
-            paths = {'COS2xx': os.path.join(
-                current_app.root_path, f'admin/static/files/cos2xx.csv'),
-                'COS126': os.path.join(
-                current_app.root_path, f'admin/static/files/cos126.csv')}
-            update_schedule(paths)
-            print("Schedule updated")
+            print("Files not found.")
         return redirect(url_for('main.dashboard'))
 
     return render_template('admin/add_schedule.html', form=form)

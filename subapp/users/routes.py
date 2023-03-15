@@ -1,9 +1,9 @@
-from flask import session, Blueprint, redirect, request, url_for, render_template, jsonify
+from flask import session, Blueprint, redirect, request, url_for, jsonify
 from subapp.models import User, Role
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
 from subapp import cas_client
-from config import ADMINS, ICO
+from config import ADMINS
 
 users = Blueprint('users', __name__, template_folder='templates')
 

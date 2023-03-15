@@ -1,9 +1,9 @@
 import os
-from flask import current_app
+from flask import session
 import pandas as pd
 from datetime import time
 from threading import Thread
-from subapp.models import User, Shift, Role
+from subapp.models import User, Shift, Role, Request
 from subapp import db
 from config import ICO, ADMINS
 
@@ -38,14 +38,16 @@ def create_users(staff, course):
         r = Role.query.filter_by(
             name='Admin').first() if person in ADMINS else Role.query.filter_by(name=course).first()
         if user is None:
-            new_user = User(netid=person, balance=ICO, role=r)
-            db.session.add(new_user)
-            db.session.commit()
-            res.append(new_user)
+            this_user = User(netid=person, balance=ICO, role=r)
+            db.session.add(this_user)
         else:
-            user.balance += ICO
-            db.session.commit()
-            res.append(user)
+            this_user = user
+            this_user.balance += ICO
+
+        db.session.commit()
+        session['credits'] = this_user.balance
+        res.append(this_user)
+
     return res
 
 
@@ -75,8 +77,13 @@ def assign_shifts(df, course):
 
 
 def update_schedule(files):
+    reqs = Request.query.all()
+    shifts = Shift.query.all()
+    [db.session.query(rq).delete() for rq in reqs]
+    [db.session.query(shift).delete() for shift in shifts]
     for name, path in files.items():
         df = pd.read_csv(path)
+        db.session.commit()
         assign_shifts(df, name)
 
     return True

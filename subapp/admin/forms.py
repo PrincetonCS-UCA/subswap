@@ -13,12 +13,12 @@ class AddScheduleForm(FlaskForm):
     COS126 = FileField('COS126 Schdeule', validators=[FileAllowed(['csv'], 'CSV files only!')])
     submit = SubmitField('Submit')
 
-    # def validate(self, extra_validators=None):
-    #     if super().validate(extra_validators):
-    #         if not (self.COS126.data or self.COS2xx.data):
-    #             self.COS2xx.errors.append('Upload at least one file')
-    #             return False
-    #         else:
-    #             return True
+    def validate(self, extra_validators=None):
+        if super().validate(extra_validators):
+            if not (self.COS126.data or self.COS2xx.data):
+                self.COS2xx.errors.append('Upload at least one file')
+                return False
+            else:
+                return True
 
-    #     return False
+        return False
