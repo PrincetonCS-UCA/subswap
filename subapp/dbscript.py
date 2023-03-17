@@ -1,10 +1,10 @@
+import random
+from datetime import time, timedelta, datetime, date
 from flask import current_app
+from config import COURSES, ICO
 from subapp import db
 from subapp.models import User, Shift, Request, Role
 from subapp.requests.util import calc_base_price
-from datetime import time, timedelta, datetime, date
-import random
-from config import COURSES, ICO
 # --------------------------------------------------------------------
 
 
@@ -36,17 +36,14 @@ def create_dummy_data(all=False,
 
     current_app.logger.info("Database initialized with dummy data.")
     print("Dummy data created.")
-
 # --------------------------------------------------------------------
-# reset db
 
 
 def reset_db():
     db.drop_all()
     db.create_all()
     print("Database reset.")
-
-# create dummy users
+# ----------------------------------------------------------------------
 
 
 def create_users():
@@ -70,8 +67,6 @@ def create_users():
 
     print(f"Added {len(User.query.all())} users")
 # --------------------------------------------------------------------
-
-# create dummy requests
 
 
 def create_requests():
@@ -109,10 +104,7 @@ def create_requests():
 
     db.session.commit()
     print(f"Added {len(Request.query.all())} requests")
-
 # --------------------------------------------------------------------
-
-# create dummy shifts
 
 
 def create_shifts():
@@ -156,10 +148,11 @@ def create_shifts():
     db.session.commit()
 
     print(f"Added {len(Shift.query.all())} shifts.")
-
 # --------------------------------------------------------------------
 
-# create associations
+# ----------------------------------------------------------------------
+# create relationships
+# ----------------------------------------------------------------------
 
 
 def user_requests():
@@ -176,6 +169,7 @@ def user_requests():
 
     db.session.commit()
     print("Created User-Request relationships")
+# ----------------------------------------------------------------------
 
 
 def user_shifts():
@@ -200,8 +194,7 @@ def user_shifts():
             user.schedule.append(random.choice(shifts))
     print("Created User-Shift relationships")
     db.session.commit()
-
-# 4. Requests - shifts
+# ----------------------------------------------------------------------
 
 
 def request_shifts():
@@ -213,3 +206,4 @@ def request_shifts():
 
     db.session.commit()
     print("Created Request-Shift relationships")
+# ----------------------------------------------------------------------

@@ -1,19 +1,23 @@
+# ----------------------------------------------------------------------
+# Defines routes for the administrator.
+# Author: Moin Mir
+# ----------------------------------------------------------------------
+
+import os
 from flask import Blueprint, redirect, url_for, render_template, current_app
 from flask_login import login_required
-import os
 from subapp.admin.forms import AddScheduleForm
-from subapp.admin.util import admin_required, save_files
 from subapp.admin.scheduler import update_schedule
-from subapp.models import Role
-from subapp import db
+from subapp.admin.util import admin_required, save_files
 
+# ----------------------------------------------------------------------
 admin = Blueprint('admin', __name__,
                   template_folder='templates',
                   static_folder='static',
                   static_url_path='/admin/static/')
+# ----------------------------------------------------------------------
 
 
-# add schedule
 @admin.route("/add_schedule", methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -32,3 +36,26 @@ def add_schedule():
         return redirect(url_for('main.dashboard'))
 
     return render_template('admin/add_schedule.html', form=form)
+
+# ----------------------------------------------------------------------
+# Error handling
+# ----------------------------------------------------------------------
+
+
+@admin.app_errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html', error=error), 404
+# ----------------------------------------------------------------------
+
+
+@admin.app_errorhandler(Exception)
+@admin.app_errorhandler(500)
+def internal_error(error):
+    return render_template('500.html', error=error), 500
+# ----------------------------------------------------------------------
+
+
+@admin.app_errorhandler(403)
+def forbidden_error(error):
+    return render_template('403.html', error=error), 403
+# ----------------------------------------------------------------------

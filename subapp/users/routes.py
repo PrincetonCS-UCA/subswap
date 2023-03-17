@@ -1,14 +1,15 @@
-from flask import session, Blueprint, redirect, request, url_for, jsonify
+from flask import session, Blueprint, redirect, request, url_for, jsonify, render_template
 from subapp.models import User, Role
 from subapp import db
 from flask_login import login_user, current_user, logout_user, login_required
 from subapp import cas_client
 from config import ADMINS
 
+# ----------------------------------------------------------------------
 users = Blueprint('users', __name__, template_folder='templates')
-
-
 # reference: https://djangocas.dev/blog/python-cas-flask-example/
+# ----------------------------------------------------------------------
+
 
 @users.route('/login')
 def login():
@@ -53,6 +54,7 @@ def login():
         session['credits'] = new_user.balance
 
         return redirect(next)
+# ----------------------------------------------------------------------
 
 
 @users.route('/logout')
@@ -62,6 +64,7 @@ def logout():
     cas_logout_url = cas_client.get_logout_url(redirect_url)
 
     return redirect(cas_logout_url)
+# ----------------------------------------------------------------------
 
 
 @users.route('/logout_callback')
@@ -71,6 +74,7 @@ def logout_callback():
     session.pop('credits', None)
     logout_user()
     return redirect(url_for('main.homepage'))
+# ----------------------------------------------------------------------
 
 
 @users.route('/balance')
@@ -78,12 +82,25 @@ def logout_callback():
 def balance():
     return jsonify({'balance': current_user.balance})
 
+# ----------------------------------------------------------------------
+# Error handling
+# ----------------------------------------------------------------------
 
-# @users.app_errorhandler(Exception)
-# @users.app_errorhandler(500)
-# def internal_error(error):
-#     return render_template('500.html', error=error), 500
 
-# @users.app_errorhandler(403)
-# def forbidden_error(error):
-#     return render_template('403.html', error=error), 403
+@users.app_errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html', error=error), 404
+# ----------------------------------------------------------------------
+
+
+@users.app_errorhandler(Exception)
+@users.app_errorhandler(500)
+def internal_error(error):
+    return render_template('500.html', error=error), 500
+# ----------------------------------------------------------------------
+
+
+@users.app_errorhandler(403)
+def forbidden_error(error):
+    return render_template('403.html', error=error), 403
+# ----------------------------------------------------------------------

@@ -1,11 +1,15 @@
-from flask import current_app
+import os
 from functools import wraps
+from flask import current_app
 from flask_login import current_user
 from config import PERMISSIONS
-import os
+# ----------------------------------------------------------------------
 
-# wrapper function for admin
+
 def permission_required(permission):
+    """
+    Creates a decorater for implementing permissions for routes.
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -14,14 +18,24 @@ def permission_required(permission):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+# ----------------------------------------------------------------------
 
 
 def admin_required(f):
+    """
+    Function decorater for requiring the admin permission.
+    """
     return permission_required(PERMISSIONS['Admin'])(f)
+# ----------------------------------------------------------------------
 
 
 def save_files(files):
+    """
+    Saves the permanent schedule files to static.
+    """
     for name, file in files.items():
-        path = os.path.join(current_app.root_path, f'admin/static/files/{name}.csv')
+        path = os.path.join(current_app.root_path,
+                            f'admin/static/files/{name}.csv')
         file.save(path)
     return True
+# ----------------------------------------------------------------------

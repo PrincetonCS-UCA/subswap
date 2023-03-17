@@ -59,7 +59,6 @@ def initialize_extensions(app):
     bootstrap.init_app(app)
     talisman.init_app(app, content_security_policy=None)
 
-
     from subapp.models import User
 
     @login_manager.user_loader
@@ -80,8 +79,8 @@ def register_blueprints(app):
 
 
 def register_cli_commands(app):
-    @app.cli.command('init_db')
-    def initialize_database():
+    @app.cli.command('dummy_data')
+    def dummy_data():
         from subapp import dbscript
         dbscript.create_dummy_data(all=True)
         echo("Initialized the database!")
@@ -99,7 +98,6 @@ def register_cli_commands(app):
         print(f"{len(User.query.all())} users.")
         print(f"{len(Request.query.all())} requests.")
         print(f"{len(Shift.query.all())} shifts.")
-
 
 
 def configure_logging(app):

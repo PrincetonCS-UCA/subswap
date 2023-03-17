@@ -1,21 +1,22 @@
+import requests
+from datetime import datetime
 from flask import (redirect, url_for, render_template,
                    request, jsonify, flash, session, current_app)
 from flask.blueprints import Blueprint
 from flask_login import login_required, current_user
-from datetime import datetime
-
+from config import PRICING_ALG
+from subapp import db
 from subapp.models import Request, Shift
 from subapp.requests.forms import RequestForm
-from subapp import db
 from subapp.requests.util import (
     get_swap_options, process_shift_str, calc_base_price)
-from config import PRICING_ALG
-import requests
+# ----------------------------------------------------------------------
 
 requests = Blueprint('requests', __name__,
                      template_folder='templates',
                      static_folder='static',
                      static_url_path='/requests/static/')
+# ----------------------------------------------------------------------
 
 
 @requests.route("/shift/<shiftid>/request", methods=['POST', 'GET'])
@@ -33,7 +34,7 @@ def create_request(shiftid):
             date_requested=form.date_requested.data,
             base_price=calc_base_price(
                 shift.id, form.date_requested.data.strftime('%Y-%m-%d'))['price']
-            )
+        )
 
         print(
             f"request: {new_request.id}, {new_request.date_requested}, {new_request.posted_by}, {new_request.shift}")
@@ -55,6 +56,7 @@ def create_request(shiftid):
         print(form.errors)
 
     return render_template('requests/create_request.html', form=form, shiftid=int(shiftid), shifts=current_user.schedule, day=shift.day)
+# ----------------------------------------------------------------------
 
 
 @requests.route("/request/<requestid>/edit", methods=['POST', 'GET'])
@@ -94,11 +96,16 @@ def edit_request(requestid):
     form.date_requested.data = rqst.date_requested.date()
 
     return render_template('requests/edit_request.html', form=form, shiftid=shift.id, shifts=current_user.schedule, base=rqst.base_price, day=shift.day)
+# ----------------------------------------------------------------------
 
 
 @ requests.route("/request/<requestid>/sub", methods=['POST', 'GET'])
 @ login_required
 def sub_request(requestid):
+    """
+    Deletes the request from the dashboard and assigns it to the
+    current user.
+    """
     rqst = Request.query.filter_by(id=requestid).first()
     if rqst.posted() == current_user:
         flash("Cannot accept your own request")
@@ -115,11 +122,17 @@ def sub_request(requestid):
     session['credits'] = current_user.balance
     db.session.commit()
     return redirect(url_for('main.profile'))
+# ----------------------------------------------------------------------
 
 
 @ requests.route("/request/<requestid>/swap", methods=['POST', 'GET'])
 @ login_required
 def swap_request(requestid):
+    """
+    Swaps the request with the selected shift and date. Deletes the
+    original request. Creates a new request with the selected date and
+    shift. Credits are not deducted from the user.
+    """
     # check if it's not the current user
     rqst = Request.query.filter_by(id=requestid).first()
     if rqst.posted() == current_user:
@@ -149,11 +162,15 @@ def swap_request(requestid):
     db.session.commit()
     flash("Request successfully accepted.")
     return redirect(url_for('main.dashboard'))
+# ----------------------------------------------------------------------
 
 
 @ requests.route("/request/<requestid>/delete", methods=['POST', 'GET'])
 @ login_required
 def delete_request(requestid):
+    """
+    Deletes the request and refunds the credits.
+    """
     rqst = Request.query.filter_by(id=requestid).first()
     if rqst.posted() == current_user:
         if rqst.accepted:
@@ -166,19 +183,31 @@ def delete_request(requestid):
     else:
         flash("Unauthorized user.")
     return redirect(url_for('main.dashboard'))
+# ----------------------------------------------------------------------
 
 
 @requests.route("/swap_shifts/<requestid>", methods=['POST', 'GET'])
 @login_required
 def swap_shifts(requestid):
+    """
+    Called by JS when user tries to Swap with an existing request.
+    Returns a list of their own shifts that can be swapped with
+    the selected request.
+    """
     rqst = Request.query.filter_by(id=requestid).first()
     res = get_swap_options(rqst.date_requested, rqst.get_course())
     return jsonify({'swap_shifts': res})
+# ----------------------------------------------------------------------
 
 
 @requests.route("/calculate_base_price")
 @login_required
 def calculate_base_price():
+    """
+    Calculates price of the request based on the pricing scheme and the
+    details of the request. Called by JS when user enters the date of
+    the new request.
+    """
     shiftid = request.args.get('shiftid')
     date = request.args.get('date')
     res = 0
@@ -189,11 +218,16 @@ def calculate_base_price():
         pass
 
     return jsonify(res)
+# ----------------------------------------------------------------------
 
 
 @requests.route("/requests/is_duplicate")
 @login_required
 def is_duplicate():
+    """
+    Checks if the new request being created is duplicate. Called by
+    JavaScript when user enters the date for their request.
+    """
     shiftid = request.args.get('shiftid')
     shift = Shift.query.filter_by(id=shiftid).first()
     date = datetime.strptime(
@@ -206,3 +240,26 @@ def is_duplicate():
     res = {'duplicate': current_user.is_request_duplicate(rqst)}
 
     return jsonify(res)
+
+# ----------------------------------------------------------------------
+# Error handling
+# ----------------------------------------------------------------------
+
+
+@requests.app_errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html', error=error), 404
+# ----------------------------------------------------------------------
+
+
+@requests.app_errorhandler(Exception)
+@requests.app_errorhandler(500)
+def internal_error(error):
+    return render_template('500.html', error=error), 500
+# ----------------------------------------------------------------------
+
+
+@requests.app_errorhandler(403)
+def forbidden_error(error):
+    return render_template('403.html', error=error), 403
+# ----------------------------------------------------------------------

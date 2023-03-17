@@ -41,7 +41,7 @@ request_date.onchange = async function () {
                 base_price.innerHTML = response.price
                 submit_button.disabled = false;
             } else {
-                base_price.innerHTML = "You do not have sufficient credits to create this request. Please select another day or contact the Lab Manager."
+                base_price.innerHTML = "You do not have sufficient credits to create this request. Please select another day or contact the Lab Manager. You can also post your request by accepting another request as a Swap."
             }
         });
     }

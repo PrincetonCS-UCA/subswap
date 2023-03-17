@@ -1,7 +1,12 @@
-from . import db, login_manager
-from flask_login import UserMixin
 from datetime import datetime
+from flask_login import UserMixin
 from config import ROLES, PERMISSIONS
+from subapp import db
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# Association tables
+# ----------------------------------------------------------------------
 
 a_posted_requests = db.Table("posted_requests",
                              db.Column("user_id", db.Integer, db.ForeignKey(
@@ -22,6 +27,11 @@ a_requested_shifts = db.Table("requested_shifts",
                               db.Column("request_id", db.Integer, db.ForeignKey(
                                   "request.id"), primary_key=True),
                               db.Column("shift_id", db.Integer, db.ForeignKey("shift.id"), primary_key=True))
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# Database models
+# ----------------------------------------------------------------------
 
 
 class User(db.Model, UserMixin):
@@ -96,6 +106,8 @@ class User(db.Model, UserMixin):
 
     def is_admin(self):
         return self.can(PERMISSIONS['Admin'])
+# ----------------------------------------------------------------------
+
 
 class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -134,6 +146,7 @@ class Request(db.Model):
         start = datetime.combine(self.date_requested, self.shift[0].start)
         end = datetime.combine(self.date_requested, self.shift[0].end)
         return [start, end]
+# ----------------------------------------------------------------------
 
 
 class Shift(db.Model):
@@ -160,6 +173,7 @@ class Shift(db.Model):
 
     def user_requests(self, user):
         return [request for request in self.requests if request.posted_by == user]
+# ----------------------------------------------------------------------
 
 
 class Role(db.Model):
@@ -201,3 +215,4 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' % self.name
+# ----------------------------------------------------------------------

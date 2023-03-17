@@ -1,20 +1,16 @@
 from datetime import timedelta, datetime, date
 from flask_login import current_user
 from config import PRICING_SCHEME
-from subapp.models import Request, Shift
-
-# def validate_request(request, swap):
-#     # can current user create this request?
-#     # is it a duplicate?
-#     if request.posted().is_duplicate(requst):
-#         return False
-#     # is it not a valid date?
-#     # if swap is true, can the user swap this shift?
-
-#     pass
+# ----------------------------------------------------------------------
 
 
 def calc_base_price(shiftid, startdate, ignore=False):
+    """
+    Calculates the price of the shift based on the PRICING_SCHEME.
+
+    Shiftid is an input variable so it can be used to calculate the
+    difficulty of the shift and factor it into the price.
+    """
     request_date = datetime.strptime(
         startdate, '%Y-%m-%d') if isinstance(startdate, str) else startdate
     num_days = (request_date - datetime.combine(date.today(),
@@ -25,6 +21,7 @@ def calc_base_price(shiftid, startdate, ignore=False):
         return price
 
     return {'status': "True" if price < current_user.balance else "False", 'price': price}
+# ----------------------------------------------------------------------
 
 
 def get_swap_options(request_date, course):
@@ -70,6 +67,7 @@ def get_swap_options(request_date, course):
                         [shift.id, shift.formatted() + ", " + x.strftime("%m-%d-%Y")])
 
     return swap_shift_list
+# ----------------------------------------------------------------------
 
 
 def process_shift_str(shift_data):
@@ -84,3 +82,4 @@ def process_shift_str(shift_data):
     date = datetime.strptime(shift_data[-1].strip(), "%m-%d-%Y")
 
     return (id, date)
+# ----------------------------------------------------------------------
