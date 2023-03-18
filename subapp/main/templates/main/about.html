@@ -65,7 +65,7 @@
                 </tbody>
             </table>
             <p>
-                Every semester, users receive 400 credits, plus any unused credits from prior semesters. Your credit
+                Every semester, users receive 300 credits, plus any unused credits from prior semesters. Your credit
                 count is displayed in the navigation bar.
             </p>
         </div>
@@ -74,12 +74,13 @@
     <div class="row mb-5">
         <div class="col-md-8 mx-auto">
             <h2 class="mb-3">How to create a request</h2>
-            <img src="{{ url_for('main.static', filename='pictures/create_request.jpg') }}" alt="Screenshot of request creation page" class="img-fluid mb-4">
+            <img src="{{ url_for('main.static', filename='pictures/create_request.jpg') }}"
+                alt="Screenshot of request creation page" class="img-fluid mb-4">
             <ol>
                 <li>Every semester, Lab TA administrators will populate the platform with your permanent shift
                     assignments, which you can view on the "Profile" page.</li>
                 <li>To create a request, click the "Request" button next to the shift and enter the date you want
-                    covered. You will be shown the price, and if you have enough credits, you can submit the request.
+                    covered. If you have enough credits, it will display the price and you can submit the request.
                 </li>
             </ol>
         </div>
@@ -88,16 +89,22 @@
     <div class="row mb-5">
         <div class="col-md-8 mx-auto">
             <h2 class="mb-3">Accepting a request</h2>
-            <img src="{{ url_for('main.static', filename='pictures/dashboard.jpg') }}" alt="Screenshot of dashboard" class="img-fluid mb-4">
-            <p>All active requests are displayed on the Dashboard. You can switch between different courses at the top. You can accept
-            a request in two different ways:</p>
-            <h3 class="mb-2">Sub</h3>
-            <p>Accepting a request as a sub means taking on an extra shift. Once accepted, the price for the shift will be credited to you and you can view it in the "Accepted Requests" tab of your Profile page.</p>
-            <img src="{{ url_for('main.static', filename='pictures/accepted_requests.jpg') }}" alt="Screenshot of the accepted requests section"
+            <img src="{{ url_for('main.static', filename='pictures/dashboard.jpg') }}" alt="Screenshot of dashboard"
                 class="img-fluid mb-4">
+            <p>All active requests are displayed on the Dashboard. You can switch between different courses at the top.
+                You can accept a request in two different ways:</p>
+            <h3 class="mb-2">Sub</h3>
+            <p>Accepting a request as a sub means taking on an extra shift. Once accepted, the price for the shift will
+                be credited to you and you can view it in the "Upcoming Accepted Requests" tab in your Profile page.</p>
+            <img src="{{ url_for('main.static', filename='pictures/accepted_requests.jpg') }}"
+                alt="Screenshot of the accepted requests section" class="img-fluid mb-4">
 
             <h3 class="mb-2">Swap</h3>
-            <p>If you want to attend a shift instead of one of your own you can opt to swap. When you do, your chosen shift will be posted as a new request. You will not get any credits for accepting a request as a swap, and you will not be charged for the new request that is created.</p>
+            <p>If you want to attend a shift instead of one of your own you can opt to swap. When you do, your chosen
+                shift will be posted as a new request. You will not get any credits for accepting a request as a swap,
+                and you will not be charged for the new request that is created.</p>
+            <img src="{{ url_for('main.static', filename='pictures/swap_shift.jpg') }}" alt="Screenshot of swap list"
+                class="img-fluid mb-4">
         </div>
     </div>
 </div>
