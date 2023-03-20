@@ -37,7 +37,7 @@ def create_shift(shift, course):
 # at the end give every one of those people ICO
 
 
-def create_users(staff, course, rehires):
+def create_users(staff, course):
     """
     Creates and adds users to the database. Assigns roles based on the
     course variable as well as allocates initial credits.
@@ -51,8 +51,6 @@ def create_users(staff, course, rehires):
         if user is None:
             user = User(netid=person, balance=ICO, role=r)
             db.session.add(user)
-        else:
-            rehires.add(person)
 
         db.session.commit()
         if user == current_user:
@@ -63,7 +61,7 @@ def create_users(staff, course, rehires):
 # ----------------------------------------------------------------------
 
 
-def assign_shifts(df, course, rehires):
+def assign_shifts(df, course, current_hires):
     """
     Creates relationships between shifts and users (after calling the
     respective functions to create them).
@@ -83,12 +81,14 @@ def assign_shifts(df, course, rehires):
             if i < len(df.columns) - 1:
                 i += 1
                 shift = create_shift(key, course)
-                users = create_users(value, course, rehires)
+                users = create_users(value, course)
+                current_hires.update([user.netid for user in users])
                 shift.staff.extend(users)
                 db.session.commit()
             else:
                 # subs
-                _ = create_users(value, course + '-sub', rehires)
+                users = create_users(value, course + '-sub')
+                current_hires.update([user.netid for user in users])
         print(f"Added {course}")
 # ----------------------------------------------------------------------
 
@@ -103,20 +103,22 @@ def update_schedule(files):
     [db.session.delete(rq) for rq in reqs]
     [db.session.delete(shift) for shift in shifts]
     db.session.commit()
-    rehires = set()
+    existing_users = [user.netid for user in User.query.all()]
+    current_hires = set()
     for name, path in files.items():
         df = pd.read_csv(path)
-        assign_shifts(df, name, rehires)
+        assign_shifts(df, name, current_hires)
 
     # roll over credits for rehires
     from subapp import create_app
     app = create_app()
     with app.app_context():
-        for person in rehires:
-            user = User.query.filter_by(netid=person).first()
-            user.balance += ICO
-            if user == current_user:
-                session['credits'] = user.balance
+        for netid in existing_users:
+            if netid in current_hires:
+                user = User.query.filter_by(netid=netid).first()
+                user.balance += ICO
+                if user == current_user:
+                    session['credits'] = user.balance
 
         db.session.commit()
 
