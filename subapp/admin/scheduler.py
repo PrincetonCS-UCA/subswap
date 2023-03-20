@@ -1,6 +1,7 @@
 from datetime import time
 import pandas as pd
 from flask import session
+from flask_login import current_user
 from config import ICO, ADMINS
 from subapp import db
 from subapp.models import User, Shift, Role, Request
@@ -32,9 +33,11 @@ def create_shift(shift, course):
     db.session.commit()
     return new_shift
 # ----------------------------------------------------------------------
+# create new users and add old users who have new shifts to a dict
+# at the end give every one of those people ICO
 
 
-def create_users(staff, course, created_users):
+def create_users(staff, course, rehires):
     """
     Creates and adds users to the database. Assigns roles based on the
     course variable as well as allocates initial credits.
@@ -44,25 +47,23 @@ def create_users(staff, course, created_users):
         user = User.query.filter_by(netid=person).first()
         r = Role.query.filter_by(
             name='Admin').first() if person in ADMINS else Role.query.filter_by(name=course).first()
+
         if user is None:
-            this_user = User(netid=person, balance=ICO, role=r)
-            db.session.add(this_user)
-            created_users.add(person)
-        elif person not in created_users:
-            this_user = user
-            this_user.balance += ICO
+            user = User(netid=person, balance=ICO, role=r)
+            db.session.add(user)
         else:
-            this_user = user
+            rehires.add(person)
 
         db.session.commit()
-        session['credits'] = this_user.balance
-        res.append(this_user)
+        if user == current_user:
+            session['credits'] = user.balance
+        res.append(user)
 
     return res
 # ----------------------------------------------------------------------
 
 
-def assign_shifts(df, course, created_users):
+def assign_shifts(df, course, rehires):
     """
     Creates relationships between shifts and users (after calling the
     respective functions to create them).
@@ -82,12 +83,12 @@ def assign_shifts(df, course, created_users):
             if i < len(df.columns) - 1:
                 i += 1
                 shift = create_shift(key, course)
-                users = create_users(value, course, created_users)
+                users = create_users(value, course, rehires)
                 shift.staff.extend(users)
                 db.session.commit()
             else:
                 # subs
-                _ = create_users(value, course + '-sub', created_users)
+                _ = create_users(value, course + '-sub', rehires)
         print(f"Added {course}")
 # ----------------------------------------------------------------------
 
@@ -102,10 +103,22 @@ def update_schedule(files):
     [db.session.delete(rq) for rq in reqs]
     [db.session.delete(shift) for shift in shifts]
     db.session.commit()
-    created_users = set()
+    rehires = set()
     for name, path in files.items():
         df = pd.read_csv(path)
-        assign_shifts(df, name, created_users)
+        assign_shifts(df, name, rehires)
+
+    # roll over credits for rehires
+    from subapp import create_app
+    app = create_app()
+    with app.app_context():
+        for person in rehires:
+            user = User.query.filter_by(netid=person).first()
+            user.balance += ICO
+            if user == current_user:
+                session['credits'] = user.balance
+
+        db.session.commit()
 
     return True
 # ----------------------------------------------------------------------

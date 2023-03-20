@@ -65,7 +65,6 @@ def edit_request(requestid):
     # shift requested
     rqst = Request.query.filter_by(id=requestid).first()
     if current_user != rqst.posted():
-        # abort(403)
         return redirect(url_for('main.dashboard'))
     if rqst.accepted:
         return redirect(url_for('main.dashboard'))
