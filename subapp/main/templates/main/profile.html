@@ -5,6 +5,7 @@
   <div class="row align-items-start">
     <div class="col-md-12">
       <section class="py-5">
+        {% if not current_user.is_sub()%}
         <div class="items_container container px-4 px-lg-5">
           <div class="card">
             <div class="card-header">
@@ -14,8 +15,8 @@
                     aria-selected="true">Permanent Schedule</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#history" role="tab" aria-controls="history"
-                    aria-selected="false">Posting History</a>
+                  <a class="nav-link" href="#history" role="tab" aria-controls="history" aria-selected="false">Posting
+                    History</a>
                 </li>
               </ul>
             </div>
@@ -92,15 +93,18 @@
             </div>
           </div>
         </div>
+        {% endif %}
         <div class="items_container container px-4 px-lg-5">
           <div class="card">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link active" href="#upcoming_reqs" role="tab" aria-controls="upcoming_reqs" aria-selected="true">Upcoming Accepted Requests</a>
+                  <a class="nav-link active" href="#upcoming_reqs" role="tab" aria-controls="upcoming_reqs"
+                    aria-selected="true">Upcoming Accepted Requests</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#past_reqs" role="tab" aria-controls="past_reqs" aria-selected="false">Past Accepted Requests</a>
+                  <a class="nav-link" href="#past_reqs" role="tab" aria-controls="past_reqs" aria-selected="false">Past
+                    Accepted Requests</a>
                 </li>
               </ul>
             </div>

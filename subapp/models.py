@@ -106,6 +106,9 @@ class User(db.Model, UserMixin):
 
     def is_admin(self):
         return self.can(PERMISSIONS['Admin'])
+
+    def is_sub(self):
+        return self.role in [k for k in ROLES.keys() if 'sub' in k]
 # ----------------------------------------------------------------------
 
 
