@@ -28,7 +28,7 @@
 </head>
 
 <body>
-  <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom">
+  <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom py-1">
     <a class="navbar-brand" href="{{url_for('main.homepage')}}"><img style="max-height:25px"
         src="{{url_for('main.static', filename='favicon.ico')}}" alt=""> Sub/Swap Marketplace</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -40,27 +40,30 @@
       <!-- leftside of nav -->
       <ul class="navbar-nav me-auto nav-pills">
         <li id="about" class="nav-item">
-          <a class="nav-link" href="{{url_for('main.about')}}">About</a>
+          <a class="nav-link px-2 bi bi-info-circle" href="{{url_for('main.about')}}"><span
+              class="ms-2">About</span></a>
         </li>
       </ul>
 
       <!-- rightside of nav -->
       {% if current_user.is_authenticated %}
       <ul class="navbar-nav ms-auto nav-pills">
-        <li id="credits" class="nav-item my-2">
-          <a class="btn my-2 my-sm-0" aria-pressed="true">
+        <li id="credits" class="nav-item my-2 px-2">
+          <a class="btn my-2 my-sm-0 bi bi-wallet" aria-pressed="true">
             Credits <span class="badge badge-dark">{{session['credits']}}</span>
           </a>
         </li>
         <li id="dashboard" class="nav-item">
-          <a class="nav-link" href="{{url_for('main.dashboard')}}">Dashboard</a>
+          <a class="nav-link px-2 bi bi-speedometer2" href="{{url_for('main.dashboard')}}"><span
+              class="ms-2">Dashboard</span></a>
         </li>
         <li id="profile" class="nav-item">
-          <a class="nav-link" href="{{url_for('main.profile')}}">Profile</a>
+          <a class="nav-link px-2 bi bi-person" href="{{url_for('main.profile')}}"><span class="ms-2">Profile</span></a>
         </li>
         {% if current_user.role.name == 'Admin' %}
         <li class="nav-item">
-          <a class="nav-link" href="{{url_for('admin.add_schedule')}}">Admin</a>
+          <a class="nav-link px-2 bi bi-gear" href="{{url_for('admin.add_schedule')}}"><span
+              class="ms-2">Admin</span></a>
         </li>
         {% endif %}
       </ul>
@@ -74,6 +77,7 @@
     </div>
   </nav>
 
+
   {% block content %}{% endblock %}
 
   <!-- Bootstrap core JS-->
@@ -81,6 +85,34 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   {% block javascript %}{% endblock %}
+  <script>
+    $(document).ready(function () {
+      let currentPath = window.location.pathname;
+      let links = document.querySelectorAll('nav a');
+
+      for (let link of links) {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('current-page');
+          break;
+        }
+      }
+    });
+  </script>
 </body>
+<style>
+  .nav-link:hover {
+    color: #ffffff;
+  }
+
+  .nav-link.current-page {
+    font-weight: bold;
+  }
+
+  .badge-primary {
+    background-color: #bebdbd;
+    color: #000000;
+    font-weight: bold;
+  }
+</style>
 
 </html>

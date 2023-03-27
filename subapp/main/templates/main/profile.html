@@ -20,13 +20,13 @@
                 </li>
               </ul>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="overflow-x: auto;">
               <div class="tab-content mt-3">
 
                 <div class="tab-pane active" id="schedule" role="tabpanel">
                   {% if shifts|length > 0 %}
-                  <table class="table">
-                    <thead class="thead-dark">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
                       <tr>
                         <th scope="col">Course</th>
                         <th scope="col">Day</th>
@@ -56,8 +56,8 @@
 
                 <div class="tab-pane" id="history" role="tabpanel" aria-labelledby="history-tab">
                   {% if history|length > 0 %}
-                  <table class="table">
-                    <thead class="thead-dark">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
                       <tr>
                         <th scope="col">Course</th>
                         <th scope="col">Date</th>
@@ -112,8 +112,8 @@
               <div class="tab-content mt-3">
                 <div class="tab-pane active" id="upcoming_reqs" role="tabpanel" aria-labelledby="upcoming_reqs-tab">
                   {% if upcoming_reqs|length > 0 %}
-                  <table class="table">
-                    <thead class="thead-dark">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
                       <tr>
                         <th scope="col">NetID</th>
                         <th scope="col">Course</th>
@@ -142,8 +142,8 @@
 
                 <div class="tab-pane" id="past_reqs" role="tabpanel" aria-labelledby="past_reqs-tab">
                   {% if past_reqs|length > 0 %}
-                  <table class="table">
-                    <thead class="thead-dark">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
                       <tr>
                         <th scope="col">netid</th>
                         <th scope="col">Course</th>
